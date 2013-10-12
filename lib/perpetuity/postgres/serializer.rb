@@ -20,7 +20,7 @@ module Perpetuity
 
       def serialize_attribute value
         if value.is_a? String
-          TextValue.new(value)
+          TextValue.new(value).to_s
         elsif value.is_a? Numeric
           value
         elsif value.is_a? Array
