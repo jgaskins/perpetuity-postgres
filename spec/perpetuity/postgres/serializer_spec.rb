@@ -27,7 +27,7 @@ module Perpetuity
 
       it 'serializes nested objects' do
         serializer.serialize_attribute('string').should == "'string'"
-        serializer.serialize_attribute(1).should == 1
+        serializer.serialize_attribute(1).should == '1'
         serializer.serialize_attribute(nil).should == 'NULL'
         serializer.serialize_attribute(true).should == 'TRUE'
         serializer.serialize_attribute(false).should == 'FALSE'

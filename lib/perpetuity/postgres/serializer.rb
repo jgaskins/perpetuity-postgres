@@ -1,4 +1,7 @@
+require 'perpetuity/postgres/serializer/text_value'
+require 'perpetuity/postgres/serializer/numeric_value'
 require 'json'
+
 module Perpetuity
   class Postgres
     class Serializer
@@ -22,7 +25,7 @@ module Perpetuity
         if value.is_a? String
           TextValue.new(value).to_s
         elsif value.is_a? Numeric
-          value
+          NumericValue.new(value).to_s
         elsif value.is_a? Array
           serialize_array value
         elsif value.is_a? Time
