@@ -76,6 +76,13 @@ module Perpetuity
         result['name'].should == 'Jamie'
       end
 
+      it 'returns the ids of all items saved' do
+        data = self.data + ["('The other Jamie')"]
+        ids = postgres.insert('User', data, attributes)
+        ids.should be_a Array
+        ids.should have(2).items
+      end
+
       it 'counts objects' do
         expect { postgres.insert 'User', data, attributes }.to change { postgres.count('User') }.by 1
       end

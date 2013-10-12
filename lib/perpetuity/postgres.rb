@@ -29,17 +29,19 @@ module Perpetuity
     end
 
     def insert klass, data, attributes
-      if data.first.is_a? Array
-        table = table_name(klass)
-        column_names = attributes.map { |attr| attr.name.to_s }.join(',')
-        values = data.join(',')
-        sql = "INSERT INTO #{table} (#{column_names}) VALUES "
-        sql << "#{values} RETURNING id"
+      table = table_name(klass)
+      column_names = attributes.map { |attr| attr.name.to_s }.join(',')
+      values = data.join(',')
+      sql = "INSERT INTO #{table} (#{column_names}) VALUES "
+      sql << "#{values} RETURNING id"
 
-        results = connection.execute(sql).to_a
-        results.map { |result| result['id'] }
+      results = connection.execute(sql).to_a
+      ids = results.map { |result| result['id'] }
+
+      if data.count > 1
+        ids
       else
-        insert(klass, [data], attributes).first
+        ids.first
       end
     rescue PG::UndefinedTable # Table doesn't exist, so we need to create it.
       create_table_with_attributes klass, attributes
