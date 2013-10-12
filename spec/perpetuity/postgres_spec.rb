@@ -60,7 +60,7 @@ module Perpetuity
 
     it 'converts values into something that works with the DB' do
       postgres.postgresify("string").should == "'string'"
-      postgres.postgresify(1).should == 1
+      postgres.postgresify(1).should == '1'
       postgres.postgresify(true).should == 'TRUE'
     end
 
