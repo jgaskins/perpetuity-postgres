@@ -1,3 +1,4 @@
+require 'perpetuity'
 require 'json'
 require 'perpetuity/postgres/connection'
 require 'perpetuity/postgres/serializer'
