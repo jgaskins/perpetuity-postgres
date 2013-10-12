@@ -1,5 +1,6 @@
 require 'perpetuity/postgres/serializer/text_value'
 require 'perpetuity/postgres/serializer/numeric_value'
+require 'perpetuity/postgres/serializer/null_value'
 require 'json'
 
 module Perpetuity
@@ -31,7 +32,7 @@ module Perpetuity
         elsif value.is_a? Time
 
         elsif value.nil?
-          'NULL'
+          NullValue.new.to_s
         elsif value == true || value == false
           value.to_s.upcase
         else
