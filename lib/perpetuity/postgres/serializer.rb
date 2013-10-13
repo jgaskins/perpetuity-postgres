@@ -9,11 +9,12 @@ require 'json'
 module Perpetuity
   class Postgres
     class Serializer
+      SERIALIZABLE_CLASSES = [Fixnum, Float, String, Hash, Time, TrueClass, FalseClass, NilClass, Array]
       attr_reader :mapper, :mapper_registry
 
       def initialize mapper
         @mapper = mapper
-        @mapper_registry = mapper.mapper_registry
+        @mapper_registry = mapper.mapper_registry if mapper
       end
 
       def serialize object
@@ -38,7 +39,7 @@ module Perpetuity
         elsif value.is_a? Numeric
           NumericValue.new(value)
         elsif value.is_a? Array
-          JSONArray.new(value)
+          serialize_array(object)
         elsif value.is_a? Time
 
         elsif value.nil?
@@ -52,9 +53,34 @@ module Perpetuity
         end.to_s
       end
 
+      def serialize_array object
+        value = object.value rescue object
+        array = value.map do |item|
+          if SERIALIZABLE_CLASSES.include? item.class
+            item
+          elsif object.embedded?
+            serialize_with_foreign_mapper item
+          end
+        end
+
+        JSONArray.new(array)
+      end
+
+      def serialize_to_hash value
+        Hash[
+          mapper.attribute_set.map do |attribute|
+            attr_name = attribute.name
+            attr_value = attribute_for(value, attr_name)
+            [attr_name, attr_value]
+          end
+        ]
+      end
+
       def serialize_with_foreign_mapper value
         mapper = mapper_registry[value.class]
-        mapper.serialize(value)
+        serializer = Serializer.new(mapper)
+        attr = serializer.serialize_to_hash(value)
+        attr.merge('__metadata__' => { 'class' => value.class })
       end
     end
   end

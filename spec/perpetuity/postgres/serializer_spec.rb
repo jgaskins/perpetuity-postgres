@@ -33,7 +33,7 @@ module Perpetuity
 
       it 'serializes complex objects' do
         jamie = Person.new('Jamie')
-        jamie_json = { __metadata__: { class: Person }, name: 'Jamie' }.to_json
+        jamie_json = { name: 'Jamie', __metadata__: { class: Person } }.to_json
         book = Book.new('Foo', [jamie])
 
         person_mapper.class.stub(data_source: data_source)
