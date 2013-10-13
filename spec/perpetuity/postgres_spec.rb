@@ -69,7 +69,7 @@ module Perpetuity
       let(:data) { ["('Jamie')"] }
 
       it 'inserts data and finds by id' do
-        id = postgres.insert 'User', data, attributes
+        id = postgres.insert('User', data, attributes).first
         result = postgres.find('User', id)
 
         id.should =~ /[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}/

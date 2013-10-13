@@ -38,11 +38,7 @@ module Perpetuity
       results = connection.execute(sql).to_a
       ids = results.map { |result| result['id'] }
 
-      if data.count > 1
-        ids
-      else
-        ids.first
-      end
+      ids
     rescue PG::UndefinedTable # Table doesn't exist, so we need to create it.
       create_table_with_attributes klass, attributes
     end

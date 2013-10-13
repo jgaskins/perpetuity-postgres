@@ -9,10 +9,11 @@ require 'json'
 module Perpetuity
   class Postgres
     class Serializer
-      attr_reader :mapper
+      attr_reader :mapper, :mapper_registry
 
       def initialize mapper
         @mapper = mapper
+        @mapper_registry = mapper.mapper_registry
       end
 
       def serialize object
