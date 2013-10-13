@@ -1,13 +1,13 @@
 module Perpetuity
   class Postgres
     class Serializer
-      class NumericValue
+      class JSONStringValue
         def initialize value
           @value = value
         end
 
         def to_s
-          @value.to_s
+          %Q{"#{@value}"}
         end
 
         def to_str
