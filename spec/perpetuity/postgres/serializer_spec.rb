@@ -22,7 +22,7 @@ module Perpetuity
       end
 
       it 'serializes an array as JSON' do
-        serializer.serialize_array([1, 'foo']).should == %q{'[1, "foo"]'}
+        serializer.serialize_attribute([1, 'foo']).should == %q{'[1,"foo"]'}
       end
 
       it 'serializes nested objects' do
