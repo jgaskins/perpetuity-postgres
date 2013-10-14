@@ -76,6 +76,17 @@ module Perpetuity
         ]
       end
 
+      def serialize_reference value
+        json = {
+          __metadata__: {
+            class: value.class,
+            id: mapper.id_for(value)
+          }
+        }
+
+        JSONHash.new(json)
+      end
+
       def serialize_with_foreign_mapper value
         mapper = mapper_registry[value.class]
         serializer = Serializer.new(mapper)

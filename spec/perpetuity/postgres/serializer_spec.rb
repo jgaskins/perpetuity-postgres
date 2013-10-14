@@ -15,6 +15,7 @@ module Perpetuity
           map Book, registry
           attribute :title, type: String
           attribute :authors, type: Array, embedded: true
+          attribute :main_character, type: Person
         end.new(registry)
       end
       let!(:person_mapper) do
@@ -28,17 +29,20 @@ module Perpetuity
       let(:serializer) { Serializer.new(book_mapper) }
 
       it 'serializes simple objects' do
-        serializer.serialize(Book.new('Foo')).should == %q{('Foo','[]')}
+        serializer.serialize(Book.new('Foo')).should == %q{('Foo','[]',NULL)}
       end
 
       it 'serializes complex objects' do
         jamie = Person.new('Jamie')
         jamie_json = { name: 'Jamie', __metadata__: { class: Person } }.to_json
-        book = Book.new('Foo', [jamie])
+        character = Person.new('Character')
+        character.instance_variable_set :@id, 1
+        character_json = { __metadata__: { class: Person, id: 1 } }.to_json
+        book = Book.new('Foo', [jamie], character)
 
         person_mapper.class.stub(data_source: data_source)
 
-        serializer.serialize(book).should == %Q{('Foo','[#{jamie_json}]')}
+        serializer.serialize(book).should == %Q{('Foo','[#{jamie_json}]','#{character_json}')}
       end
 
       context 'with natively serializable values' do
