@@ -39,8 +39,12 @@ module Perpetuity
       ids = results.map { |result| result['id'] }
 
       ids
-    rescue PG::UndefinedTable # Table doesn't exist, so we need to create it.
+    rescue PG::UndefinedTable => e # Table doesn't exist, so we create it.
+      retries ||= 0
+      retries += 1
       create_table_with_attributes klass, attributes
+      retry unless retries > 1
+      raise e
     end
 
     def count klass
