@@ -52,6 +52,7 @@ module Perpetuity
       sql = "SELECT COUNT(*) FROM #{table}"
       connection.execute(sql).to_a.first['count'].to_i
     rescue PG::UndefinedTable
+      # Table does not exist, so there are 0 records
       0
     end
 
