@@ -56,10 +56,7 @@ module Perpetuity
     end
 
     def find klass, id
-      table = table_name(klass)
-      id = "'#{id}'"
-      sql = "SELECT * FROM #{table} WHERE id = #{id}"
-      connection.execute(sql).to_a.first
+      retrieve klass, query { |o| o.id == id }.to_db
     end
 
     def table_name klass
