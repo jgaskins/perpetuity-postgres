@@ -82,6 +82,9 @@ module Perpetuity
     end
 
     def retrieve klass, criteria, options={}
+      sql = "SELECT * FROM #{table_name(klass)} WHERE "
+      sql << criteria
+      connection.execute(sql).to_a.first
     end
 
     def drop_table name
