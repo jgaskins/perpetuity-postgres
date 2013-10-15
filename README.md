@@ -1,6 +1,6 @@
 # Perpetuity::Postgres
 
-This is the PostgreSQL adapter for Perpetuity.
+This is the PostgreSQL adapter for [Perpetuity](https://github.com/jgaskins/perpetuity), a Data Mapper-pattern persistence gem. The Data Mapper pattern puts persistence logic into mapper objects and keeps it out of your domain models. This keeps your domain models lightweight and focused.
 
 ## Installation
 
