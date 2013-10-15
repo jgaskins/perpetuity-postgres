@@ -57,7 +57,7 @@ module Perpetuity
     end
 
     def find klass, id
-      retrieve klass, query { |o| o.id == id }.to_db
+      retrieve(klass, query { |o| o.id == id }.to_db).first
     end
 
     def table_name klass
@@ -82,7 +82,7 @@ module Perpetuity
     def retrieve klass, criteria, options={}
       sql = "SELECT * FROM #{table_name(klass)} WHERE "
       sql << criteria
-      connection.execute(sql).to_a.first
+      connection.execute(sql).to_a
     end
 
     def drop_table name
