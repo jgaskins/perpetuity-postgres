@@ -101,13 +101,13 @@ module Perpetuity
 
     describe 'query generation' do
       it 'creates SQL queries with a block' do
-        postgres.query(Object) { |o| o.name == 'foo' }.to_db.should ==
-          "SELECT * FROM Object WHERE name = 'foo'"
+        postgres.query { |o| o.name == 'foo' }.to_db.should ==
+          "name = 'foo'"
       end
 
       it 'does not allow SQL injection' do
-        query = postgres.query(Object) { |o| o.name == "' OR 1; --" }.to_db
-        query.should == "SELECT * FROM Object WHERE name = '\\' OR 1; --'"
+        query = postgres.query { |o| o.name == "' OR 1; --" }.to_db
+        query.should == "name = '\\' OR 1; --'"
       end
     end
   end

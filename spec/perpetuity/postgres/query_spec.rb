@@ -4,8 +4,8 @@ module Perpetuity
   class Postgres
     describe Query do
       it 'generates an equality statement' do
-        query = Query.new(Object) { |o| o.name == 'foo' }
-        query.to_db.should == "SELECT * FROM Object WHERE name = 'foo'"
+        query = Query.new { |o| o.name == 'foo' }
+        query.to_db.should == "name = 'foo'"
       end
     end
   end

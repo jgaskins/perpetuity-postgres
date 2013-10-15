@@ -74,8 +74,8 @@ module Perpetuity
       # Do nothing. There is already nothing here.
     end
 
-    def query klass, &block
-      Query.new(klass, &block)
+    def query &block
+      Query.new(&block)
     end
 
     def negate_query

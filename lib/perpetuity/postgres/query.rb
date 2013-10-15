@@ -5,13 +5,12 @@ module Perpetuity
     class Query
       attr_reader :query, :klass
 
-      def initialize klass, &block
-        @klass = klass
+      def initialize &block
         @query = block
       end
 
       def to_db
-        "SELECT * FROM #{klass} WHERE #{query.call(self).to_db}"
+        query.call(self).to_db
       end
 
       def method_missing name
