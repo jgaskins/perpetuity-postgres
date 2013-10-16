@@ -13,6 +13,10 @@ module Perpetuity
         query.call(self).to_db
       end
 
+      def to_str
+        to_db
+      end
+
       def method_missing name
         QueryAttribute.new(name)
       end
