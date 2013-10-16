@@ -106,6 +106,7 @@ module Perpetuity
     end
 
     def unserialize data, mapper
+      Serializer.new(mapper).unserialize data
     end
 
     def create_table_with_attributes klass, attributes

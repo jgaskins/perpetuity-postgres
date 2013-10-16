@@ -68,6 +68,54 @@ module Perpetuity
           serializer.serialize_attribute([1, 'foo']).should == %q{'[1,"foo"]'}
         end
       end
+
+      describe 'unserialization AKA deserialization' do
+        let(:author) { Person.new('Me') }
+        let(:serialized_book) do
+          {
+            'id' => 'id-id-id',
+            'title' => 'My Book',
+            'authors' => [
+              {
+                '__metadata__' => {
+                  'class' => 'Person'
+                },
+                'name' => 'Me'
+              }
+            ].to_json,
+            'main_character' => nil
+          }
+        end
+
+        it 'deserializes an object that embeds another object' do
+          book = Book.new('My Book', [author])
+          serializer.unserialize(serialized_book).should == book
+        end
+      end
+
+      describe 'identifying embedded/referenced objects as foreign' do
+        it 'sees hashes with metadata keys as foreign objects' do
+          serializer.foreign_object?({'__metadata__' => 'lol'}).should be_true
+        end
+
+        it 'sees hashes without metadata keys as simple hashes' do
+          serializer.foreign_object?({ 'name' => 'foo' }).should be_false
+        end
+      end
+
+      describe 'identifying possible JSON strings' do
+        it 'identifies JSON objects' do
+          serializer.possible_json_value?('{"name":"foo"}').should be_true
+        end
+
+        it 'identifies JSON arrays' do
+          serializer.possible_json_value?('[{"name":"foo"}]').should be_true
+        end
+
+        it 'rejects things it does not detect as either of the above' do
+          serializer.possible_json_value?('foo is my name').should be_false
+        end
+      end
     end
   end
 end

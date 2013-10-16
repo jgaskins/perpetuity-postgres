@@ -4,11 +4,14 @@ require 'perpetuity/postgres/serializer/numeric_value'
 require 'perpetuity/postgres/serializer/null_value'
 require 'perpetuity/postgres/serializer/boolean_value'
 require 'perpetuity/postgres/serializer/json_array'
+require 'perpetuity/data_injectable'
 require 'json'
 
 module Perpetuity
   class Postgres
     class Serializer
+      include DataInjectable
+
       SERIALIZABLE_CLASSES = [Fixnum, Float, String, Hash, Time, TrueClass, FalseClass, NilClass, Array]
       attr_reader :mapper, :mapper_registry
 
@@ -25,6 +28,57 @@ module Perpetuity
         end.join(',')
 
         "(#{attrs})"
+      end
+
+      def unserialize data
+        if data.is_a? Array
+          data.map do |datum|
+            object = mapper.mapped_class.allocate
+            datum.each do |attribute_name, value|
+              inject_attribute object, attribute_name, unserialize_attribute(value)
+            end
+
+            object
+          end
+        else
+          unserialize([data]).first
+        end
+      end
+
+      def unserialize_attribute value
+        if possible_json_value?(value)
+          value = JSON.parse(value) rescue value
+          if value.is_a? Array
+            value = value.map { |v| unserialize_attribute(v) }
+          else
+            value
+          end
+        end
+        if foreign_object? value
+          value = unserialize_foreign_object value
+        end
+
+        value
+      end
+
+      def possible_json_value? value
+        value.is_a?(String) && %w([ {).include?(value[0])
+      end
+
+      def foreign_object? value
+        value.is_a?(Hash) && value.has_key?('__metadata__')
+      end
+
+      def unserialize_foreign_object data
+        metadata = data.delete('__metadata__')
+        klass = Object.const_get(metadata['class'])
+        serializer = serializer_for(klass)
+
+        serializer.unserialize(data)
+      end
+
+      def serializer_for klass
+        Serializer.new(mapper_registry[klass])
       end
 
       def attribute_for object, attr_name
