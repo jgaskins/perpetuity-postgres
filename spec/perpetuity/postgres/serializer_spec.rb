@@ -1,4 +1,3 @@
-require 'perpetuity/postgres'
 require 'perpetuity/postgres/serializer'
 require 'perpetuity/mapper'
 require 'perpetuity/mapper_registry'
@@ -25,7 +24,6 @@ module Perpetuity
           attribute :name, type: String
         end.new(registry)
       end
-      let(:data_source) { Postgres.new(db: 'perpetuity_gem_test') }
       let(:serializer) { Serializer.new(book_mapper) }
 
       it 'serializes simple objects' do
@@ -39,8 +37,6 @@ module Perpetuity
         character.instance_variable_set :@id, 1
         character_json = { __metadata__: { class: Person, id: 1 } }.to_json
         book = Book.new('Foo', [jamie], character)
-
-        person_mapper.class.stub(data_source: data_source)
 
         serializer.serialize(book).should == %Q{('Foo','[#{jamie_json}]','#{character_json}')}
       end
