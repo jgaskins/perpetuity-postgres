@@ -72,9 +72,17 @@ module Perpetuity
       def unserialize_foreign_object data
         metadata = data.delete('__metadata__')
         klass = Object.const_get(metadata['class'])
-        serializer = serializer_for(klass)
+        if metadata.has_key? 'id'
+          id = metadata['id']
+          return unserialize_reference(klass, id)
+        end
 
+        serializer = serializer_for(klass)
         serializer.unserialize(data)
+      end
+
+      def unserialize_reference klass, id
+        Reference.new(klass, id)
       end
 
       def serializer_for klass

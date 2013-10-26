@@ -72,20 +72,30 @@ module Perpetuity
             'id' => 'id-id-id',
             'title' => 'My Book',
             'authors' => [
-              {
-                '__metadata__' => {
-                  'class' => 'Person'
-                },
-                'name' => 'Me'
-              }
             ].to_json,
             'main_character' => nil
           }
         end
 
         it 'deserializes an object that embeds another object' do
+          serialized_authors = [{
+            '__metadata__' => { 'class' => 'Person' },
+            'name' => 'Me'
+          }].to_json
+          serialized_book['authors'] = serialized_authors
           book = Book.new('My Book', [author])
           serializer.unserialize(serialized_book).should == book
+        end
+
+        it 'deserializes an object which references another object' do
+          serialized_book['main_character'] = {
+            '__metadata__' => {
+              'class' => 'Person',
+              'id' => 'id-id-id'
+            }
+          }.to_json
+          deserialized_book = Book.new('My Book', [], Reference.new(Person, 'id-id-id'))
+          serializer.unserialize(serialized_book).should == deserialized_book
         end
       end
 
