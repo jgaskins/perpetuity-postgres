@@ -29,11 +29,9 @@ module Perpetuity
     end
 
     def insert klass, data, attributes
-      table = table_name(klass)
-      column_names = attributes.map { |attr| attr.name.to_s }.join(',')
-      values = data.join(',')
-      sql = "INSERT INTO #{table} (#{column_names}) VALUES "
-      sql << "#{values} RETURNING id"
+      table = TableName.new(klass)
+      data = data.first if data.is_a? Array
+      sql = "INSERT INTO #{table} #{data} RETURNING id"
 
       results = connection.execute(sql).to_a
       ids = results.map { |result| result['id'] }

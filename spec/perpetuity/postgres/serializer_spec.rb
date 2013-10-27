@@ -27,7 +27,8 @@ module Perpetuity
       let(:serializer) { Serializer.new(book_mapper) }
 
       it 'serializes simple objects' do
-        serializer.serialize(Book.new('Foo')).should == %q{('Foo','[]',NULL)}
+        serializer.serialize(Book.new('Foo')).to_s.should ==
+          %q{(title,authors,main_character) VALUES ('Foo','[]',NULL)}
       end
 
       it 'serializes complex objects' do
@@ -38,7 +39,8 @@ module Perpetuity
         character_json = { __metadata__: { class: Person, id: 1 } }.to_json
         book = Book.new('Foo', [jamie], character)
 
-        serializer.serialize(book).should == %Q{('Foo','[#{jamie_json}]','#{character_json}')}
+        serializer.serialize(book).to_s.should ==
+          %Q{(title,authors,main_character) VALUES ('Foo','[#{jamie_json}]','#{character_json}')}
       end
 
       context 'with natively serializable values' do

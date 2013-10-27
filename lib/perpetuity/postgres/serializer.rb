@@ -1,3 +1,4 @@
+require 'perpetuity/postgres/serialized_data'
 require 'perpetuity/postgres/value_with_attribute'
 require 'perpetuity/postgres/serializer/text_value'
 require 'perpetuity/postgres/serializer/numeric_value'
@@ -25,9 +26,10 @@ module Perpetuity
           attr_name = attribute.name.to_s
           value = ValueWithAttribute.new(attribute_for(object, attr_name), attribute)
           serialize_attribute(value)
-        end.join(',')
+        end
+        column_names = mapper.attributes
 
-        "(#{attrs})"
+        SerializedData.new(column_names, attrs)
       end
 
       def unserialize data
