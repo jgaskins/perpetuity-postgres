@@ -61,7 +61,7 @@ module Perpetuity
     end
 
     def table_name klass
-      klass.to_s.inspect
+      TableName.new(klass)
     end
 
     def delete_all klass
@@ -86,7 +86,7 @@ module Perpetuity
     end
 
     def drop_table name
-      connection.execute "DROP TABLE IF EXISTS #{name.inspect}"
+      connection.execute "DROP TABLE IF EXISTS #{table_name(name)}"
     end
 
     def create_table name, attributes

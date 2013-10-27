@@ -19,6 +19,10 @@ module Perpetuity
         table.attributes.should == attributes
       end
 
+      it 'converts to a string for SQL' do
+        table.to_s.should == '"Article"'
+      end
+
       it 'generates proper SQL to create itself' do
         table.create_table_sql.should ==
           'CREATE TABLE IF NOT EXISTS "Article" (id UUID PRIMARY KEY DEFAULT uuid_generate_v4(), title VARCHAR(40), body TEXT, author JSON, published_at DATETIME)'
