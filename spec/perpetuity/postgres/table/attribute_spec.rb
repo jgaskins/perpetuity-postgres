@@ -56,8 +56,8 @@ module Perpetuity
         describe 'times' do
           let(:timestamp) { Attribute.new('timestamp', Time) }
 
-          it 'converts to the SQL DATETIME type' do
-            timestamp.sql_type.should == 'DATETIME'
+          it 'converts to the SQL TIMESTAMPTZ type' do
+            timestamp.sql_type.should == 'TIMESTAMPTZ'
           end
         end
 

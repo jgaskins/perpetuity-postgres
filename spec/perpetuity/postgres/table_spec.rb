@@ -25,7 +25,7 @@ module Perpetuity
 
       it 'generates proper SQL to create itself' do
         table.create_table_sql.should ==
-          'CREATE TABLE IF NOT EXISTS "Article" (id UUID PRIMARY KEY DEFAULT uuid_generate_v4(), title VARCHAR(40), body TEXT, author JSON, published_at DATETIME)'
+          'CREATE TABLE IF NOT EXISTS "Article" (id UUID PRIMARY KEY DEFAULT uuid_generate_v4(), title VARCHAR(40), body TEXT, author JSON, published_at TIMESTAMPTZ)'
       end
     end
   end
