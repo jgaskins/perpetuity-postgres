@@ -8,7 +8,8 @@ module Perpetuity
       let(:body)   { Table::Attribute.new('body', String) }
       let(:author) { Table::Attribute.new('author', Object) }
       let(:published_at) { Table::Attribute.new('published_at', Time) }
-      let(:attributes) { [title, body, author, published_at] }
+      let(:views) { Table::Attribute.new('views', Integer) }
+      let(:attributes) { [title, body, author, published_at, views] }
       let(:table) { Table.new('Article', attributes) }
 
       it 'knows its name' do
@@ -25,7 +26,17 @@ module Perpetuity
 
       it 'generates proper SQL to create itself' do
         table.create_table_sql.should ==
-          'CREATE TABLE IF NOT EXISTS "Article" (id UUID PRIMARY KEY DEFAULT uuid_generate_v4(), title VARCHAR(40), body TEXT, author JSON, published_at TIMESTAMPTZ)'
+          'CREATE TABLE IF NOT EXISTS "Article" (id UUID PRIMARY KEY DEFAULT uuid_generate_v4(), title VARCHAR(40), body TEXT, author JSON, published_at TIMESTAMPTZ, views INTEGER)'
+      end
+
+      describe 'id column' do
+        context 'when there is an id attribute' do
+          it 'uses the attribute type for the column type' do
+            attributes = [Table::Attribute.new(:id, String, primary_key: true), Table::Attribute.new(:name, String)]
+            table = Table.new('User', attributes)
+            table.create_table_sql.should == 'CREATE TABLE IF NOT EXISTS "User" (id TEXT PRIMARY KEY, name TEXT)'
+          end
+        end
       end
     end
   end

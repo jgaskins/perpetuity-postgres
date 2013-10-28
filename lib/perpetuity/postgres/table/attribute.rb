@@ -22,6 +22,8 @@ module Perpetuity
             else
               'TEXT'
             end
+          elsif type == Integer
+            'INTEGER'
           elsif type == UUID
             'UUID'
           elsif type == Time

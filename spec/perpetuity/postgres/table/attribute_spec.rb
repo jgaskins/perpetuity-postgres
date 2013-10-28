@@ -53,6 +53,14 @@ module Perpetuity
           end
         end
 
+        describe 'integers' do
+          let(:page_views) { Attribute.new('page_views', Integer, default: 0) }
+
+          it 'generates the proper SQL' do
+            page_views.sql_declaration.should == 'page_views INTEGER DEFAULT 0'
+          end
+        end
+
         describe 'times' do
           let(:timestamp) { Attribute.new('timestamp', Time) }
 
