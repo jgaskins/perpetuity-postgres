@@ -5,6 +5,7 @@ require 'perpetuity/postgres/serializer/numeric_value'
 require 'perpetuity/postgres/serializer/null_value'
 require 'perpetuity/postgres/serializer/boolean_value'
 require 'perpetuity/postgres/serializer/json_array'
+require 'perpetuity/postgres/serializer/timestamp_value'
 require 'perpetuity/data_injectable'
 require 'json'
 
@@ -105,7 +106,7 @@ module Perpetuity
         elsif value.is_a? Array
           serialize_array(object)
         elsif value.is_a? Time
-
+          TimestampValue.new(value)
         elsif value.nil?
           NullValue.new
         elsif value == true || value == false

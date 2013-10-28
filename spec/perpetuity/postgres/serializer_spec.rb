@@ -62,6 +62,11 @@ module Perpetuity
           serializer.serialize_attribute(false).should == 'FALSE'
         end
 
+        it 'serializes Time objects' do
+          time = Time.new(2000, 1, 2, 3, 4, 5.123456, '-04:00')
+          serializer.serialize_attribute(time).should == "'2000-01-02 03:04:05.123456-0400'::timestamptz"
+        end
+
         it 'serializes an array as JSON' do
           serializer.serialize_attribute([1, 'foo']).should == %q{'[1,"foo"]'}
         end
