@@ -32,7 +32,7 @@ module Perpetuity
             elsif value.is_a? Class
               JSONStringValue.new(value.to_s)
             else
-              p value
+              value
             end
           end.join(',')
         end

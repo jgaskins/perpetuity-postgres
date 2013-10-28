@@ -23,7 +23,6 @@ module Perpetuity
 
         @pg_connection
       rescue PG::ConnectionBad => e
-        p e
         tries ||= 0
         conn = PG.connect
         conn.exec "CREATE DATABASE #{db}"
