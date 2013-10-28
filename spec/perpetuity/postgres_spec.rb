@@ -67,7 +67,7 @@ module Perpetuity
 
     describe 'working with data' do
       let(:attributes) { [Attribute.new(:name, String)] }
-      let(:data) { Postgres::SerializedData.new([:name], ["'Jamie'"]) }
+      let(:data) { [Postgres::SerializedData.new([:name], ["'Jamie'"])] }
 
       it 'inserts data and finds by id' do
         id = postgres.insert('User', data, attributes).first
@@ -78,8 +78,8 @@ module Perpetuity
       end
 
       it 'returns the ids of all items saved' do
-        data = self.data + Postgres::SerializedData.new([:name], ["'Jessica'"]) +
-                           Postgres::SerializedData.new([:name], ["'Kevin'"])
+        self.data << Postgres::SerializedData.new([:name], ["'Jessica'"]) <<
+                     Postgres::SerializedData.new([:name], ["'Kevin'"])
         ids = postgres.insert('User', data, attributes)
         ids.should be_a Array
         ids.should have(3).items

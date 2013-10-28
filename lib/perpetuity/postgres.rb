@@ -28,9 +28,9 @@ module Perpetuity
       )
     end
 
-    def insert klass, data, attributes
+    def insert klass, serialized_objects, attributes
       table = TableName.new(klass)
-      data = data.first if data.is_a? Array
+      data = serialized_objects.reduce(:+)
       sql = "INSERT INTO #{table} #{data} RETURNING id"
 
       results = connection.execute(sql).to_a

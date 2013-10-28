@@ -17,6 +17,12 @@ module Perpetuity
       end
 
       context 'with multiple serialized objects' do
+        let(:serialized_multiple) do
+          [ SerializedData.new(columns, ["'Jamie'", 31]),
+            SerializedData.new(columns, ["'Jessica'", 23]),
+            SerializedData.new(columns, ["'Kevin'", 22]),
+          ].reduce(:+)
+        end
         let(:serialized_multiple) { serialized + SerializedData.new(columns, ["'Jessica'", 23]) +
                                                  SerializedData.new(columns, ["'Kevin'",22])}
 
