@@ -11,9 +11,17 @@ module Perpetuity
         serialized.to_s.should == "(name,age) VALUES ('Jamie',31)"
       end
 
-      it 'adds a value' do
-        serialized['id'] = 'abc'
-        serialized.to_s.should == "(name,age,id) VALUES ('Jamie',31,'abc')"
+      describe 'adding values' do
+        it 'adds a value' do
+          serialized['id'] = 'abc'
+          serialized.to_s.should == "(name,age,id) VALUES ('Jamie',31,'abc')"
+        end
+
+        it 'replaces an existing value' do
+          serialized['id'] = 'abc'
+          serialized['id'] = 'xyz'
+          serialized.to_s.should == "(name,age,id) VALUES ('Jamie',31,'xyz')"
+        end
       end
 
       context 'with multiple serialized objects' do

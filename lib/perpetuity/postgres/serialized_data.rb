@@ -15,8 +15,14 @@ module Perpetuity
       end
 
       def []= column, value
-        column_names << column
-        values.first << Serializer::TextValue.new(value)
+        value = Serializer::TextValue.new(value)
+        if column_names.include? column
+          index = column_names.index(column)
+          values.first[index] = value
+        else
+          column_names << column
+          values.first << value
+        end
       end
 
       def + other
