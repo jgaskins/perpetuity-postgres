@@ -13,7 +13,7 @@ module Perpetuity
         Class.new(Mapper) do
           map Book, registry
           attribute :title, type: String
-          attribute :authors, type: Array, embedded: true
+          attribute :authors, type: Array[Person], embedded: true
           attribute :main_character, type: Person
         end.new(registry)
       end
@@ -31,16 +31,30 @@ module Perpetuity
           %q{(title,authors,main_character) VALUES ('Foo','[]',NULL)}
       end
 
-      it 'serializes complex objects' do
-        jamie = Person.new('Jamie')
-        jamie_json = { name: 'Jamie', __metadata__: { class: Person } }.to_json
-        character = Person.new('Character')
-        character.instance_variable_set :@id, 1
-        character_json = { __metadata__: { class: Person, id: 1 } }.to_json
-        book = Book.new('Foo', [jamie], character)
+      describe 'serializing complex objects' do
+        let(:jamie) { Person.new('Jamie') }
+        let(:jamie_json) { '{"name":"Jamie","__metadata__":{"class":"Person"}}' }
+        let(:character) { Person.new('Character') }
+        let(:character_json) { '{"__metadata__":{"class":"Person","id":1}}' }
 
-        serializer.serialize(book).to_s.should ==
-          %Q{(title,authors,main_character) VALUES ('Foo','[#{jamie_json}]','#{character_json}')}
+        before { character.instance_variable_set :@id, 1 }
+
+        context 'with nested objects' do
+          let(:book) { Book.new('Foo', jamie, character) }
+          it 'converts objects into JSON' do
+            serializer.serialize(book).to_s.should ==
+              %Q{(title,authors,main_character) VALUES ('Foo','#{jamie_json}','#{character_json}')}
+          end
+        end
+
+        context 'with arrays of nested objects' do
+          let(:book) { Book.new('Foo', [jamie], [character]) }
+
+          it 'adds the JSON array' do
+            serializer.serialize(book).to_s.should ==
+              %Q{(title,authors,main_character) VALUES ('Foo','[#{jamie_json}]','[#{character_json}]')}
+          end
+        end
       end
 
       context 'with natively serializable values' do

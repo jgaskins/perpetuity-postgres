@@ -125,6 +125,8 @@ module Perpetuity
             item
           elsif object.embedded?
             serialize_with_foreign_mapper item
+          else
+            serialize_reference item
           end
         end
 
@@ -142,6 +144,10 @@ module Perpetuity
       end
 
       def serialize_reference value
+        unless mapper.persisted? value
+          mapper_registry[value.class].insert value
+        end
+
         json = {
           __metadata__: {
             class: value.class,
@@ -156,7 +162,9 @@ module Perpetuity
         mapper = mapper_registry[value.class]
         serializer = Serializer.new(mapper)
         attr = serializer.serialize_to_hash(value)
-        attr.merge('__metadata__' => { 'class' => value.class })
+        attr.merge!('__metadata__' => { 'class' => value.class })
+
+        JSONHash.new(attr)
       end
     end
   end
