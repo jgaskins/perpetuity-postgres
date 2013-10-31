@@ -22,6 +22,8 @@ module Perpetuity
               JSONStringValue.new(element)
             elsif element.is_a? Hash
               JSONHash.new(element, :inner)
+            elsif element.is_a? JSONHash
+              JSONHash.new(element.to_hash, :inner)
             end
           end.join(',')
         end
