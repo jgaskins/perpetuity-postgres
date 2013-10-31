@@ -18,6 +18,10 @@ module Perpetuity
           end
         end
 
+        def to_hash
+          @value
+        end
+
         def serialize_elements
           @value.map do |key, value|
             string = ''

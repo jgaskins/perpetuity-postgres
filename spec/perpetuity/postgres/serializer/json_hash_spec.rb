@@ -23,6 +23,10 @@ module Perpetuity
         it 'serializes hashes with multiple entries' do
           JSONHash.new({a: 1, b: 'c'}).to_s.should == %q{'{"a":1,"b":"c"}'}
         end
+
+        it 'converts back to a hash' do
+          JSONHash.new({a: 1}).to_hash.should == { a: 1 }
+        end
       end
     end
   end
