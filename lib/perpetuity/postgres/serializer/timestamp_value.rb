@@ -30,7 +30,7 @@ module Perpetuity
         end
 
         def second
-          '%02d.%6d' % [time.sec, time.usec]
+          '%02d.%06d' % [time.sec, time.usec]
         end
 
         def offset
