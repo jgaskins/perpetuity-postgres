@@ -5,6 +5,7 @@ require 'perpetuity/postgres/serializer'
 require 'perpetuity/postgres/query'
 require 'perpetuity/postgres/table'
 require 'perpetuity/postgres/table/attribute'
+require 'perpetuity/postgres/sql_select'
 
 module Perpetuity
   class Postgres
@@ -78,9 +79,14 @@ module Perpetuity
     end
 
     def retrieve klass, criteria, options={}
-      sql = "SELECT * FROM #{table_name(klass)} WHERE "
-      sql << criteria
+      sql = select(klass, criteria, options)
       connection.execute(sql).to_a
+    end
+
+    def select table, criteria, options
+      SQLSelect.new(table: table,
+                    where: criteria,
+                    limit: options[:limit]).to_s
     end
 
     def drop_table name

@@ -111,6 +111,12 @@ module Perpetuity
         query = postgres.query { |o| o.name == "' OR 1; --" }.to_db
         query.should == "name = '\\' OR 1; --'"
       end
+
+      it 'limits results' do
+        query = postgres.query
+        sql = postgres.select('Article', query, limit: 2)
+        sql.should == %Q{SELECT * FROM "Article" WHERE TRUE LIMIT 2}
+      end
     end
   end
 end
