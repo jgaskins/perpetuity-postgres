@@ -14,6 +14,10 @@ module Perpetuity
         q << query
         q.should == "name = 'foo'"
       end
+
+      it 'returns TRUE with no block passed' do
+        Query.new.to_db.should == 'TRUE'
+      end
     end
   end
 end

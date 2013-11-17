@@ -1,4 +1,5 @@
 require 'perpetuity/postgres/query_attribute'
+require 'perpetuity/postgres/nil_query'
 
 module Perpetuity
   class Postgres
@@ -6,7 +7,11 @@ module Perpetuity
       attr_reader :query, :klass
 
       def initialize &block
-        @query = block
+        if block_given?
+          @query = block
+        else
+          @query = proc { NilQuery.new }
+        end
       end
 
       def to_db
