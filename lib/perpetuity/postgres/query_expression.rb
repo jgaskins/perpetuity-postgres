@@ -1,5 +1,6 @@
 require 'perpetuity/postgres/query_union'
 require 'perpetuity/postgres/query_intersection'
+require 'perpetuity/postgres/serializer/text_value'
 
 module Perpetuity
   class Postgres
@@ -22,6 +23,13 @@ module Perpetuity
         elsif value.is_a? Regexp
           "'#{value.to_s.sub(/\A\(\?-mix\:/, '').sub(/\)\z/, '')}'"
         elsif value.is_a? Array
+          value.map! do |element|
+            if element.is_a? String
+              Serializer::TextValue.new(element)
+            else
+              element
+            end
+          end
           "(#{value.join(',')})"
         else
           value

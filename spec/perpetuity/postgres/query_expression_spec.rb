@@ -57,6 +57,12 @@ module Perpetuity
           expression.to_db.should == "attribute IN (1,2,3)"
         end
 
+        it 'checks for inclusion of strings' do
+          expression.comparator = :in
+          expression.value = ['abc', '123']
+          expression.to_db.should == "attribute IN ('abc','123')"
+        end
+
         it 'checks for regexp matching' do
           expression.comparator = :=~
           expression.value = /value/
