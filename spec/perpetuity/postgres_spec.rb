@@ -94,6 +94,11 @@ module Perpetuity
         postgres.count('Article').should == 0
       end
 
+      it 'returns no rows when the table does not exist' do
+        postgres.drop_table 'Article'
+        postgres.retrieve('Article', 'TRUE').should == []
+      end
+
       it 'deletes all records' do
         postgres.insert 'User', data, attributes
         postgres.delete_all 'User'

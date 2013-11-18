@@ -82,6 +82,8 @@ module Perpetuity
     def retrieve klass, criteria, options={}
       sql = select(klass, criteria, options)
       connection.execute(sql).to_a
+    rescue PG::UndefinedTable
+      []
     end
 
     def select table, criteria, options
