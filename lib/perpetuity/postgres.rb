@@ -80,16 +80,15 @@ module Perpetuity
     end
 
     def retrieve klass, criteria, options={}
-      sql = select(klass, criteria, options)
+      options.merge! from: klass, where: criteria
+      sql = select options
       connection.execute(sql).to_a
     rescue PG::UndefinedTable
       []
     end
 
-    def select table, criteria, options
-      SQLSelect.new(table: table,
-                    where: criteria,
-                    limit: options[:limit]).to_s
+    def select *args
+      SQLSelect.new(*args).to_s
     end
 
     def drop_table name

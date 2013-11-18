@@ -3,7 +3,7 @@ require 'perpetuity/postgres/sql_select'
 module Perpetuity
   class Postgres
     describe SQLSelect do
-      let(:query) { SQLSelect.new(table: 'foo',
+      let(:query) { SQLSelect.new(from: 'foo',
                                   where: "name = 'foo'",
                                   limit: 4) }
       subject { query }
@@ -17,8 +17,13 @@ module Perpetuity
       end
 
       it 'generates a query with no clauses' do
-        sql = SQLSelect.new(table: 'foo').to_s
+        sql = SQLSelect.new(from: 'foo').to_s
         sql.should == %Q{SELECT * FROM "foo"}
+      end
+
+      it 'generates a count query' do
+        sql = SQLSelect.new('COUNT(*)', from: 'foo').to_s
+        sql.should == %Q{SELECT COUNT(*) FROM "foo"}
       end
     end
   end

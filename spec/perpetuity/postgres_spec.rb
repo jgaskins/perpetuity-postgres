@@ -119,7 +119,7 @@ module Perpetuity
 
       it 'limits results' do
         query = postgres.query
-        sql = postgres.select('Article', query, limit: 2)
+        sql = postgres.select(from: 'Article', where: query, limit: 2)
         sql.should == %Q{SELECT * FROM "Article" WHERE TRUE LIMIT 2}
       end
     end
