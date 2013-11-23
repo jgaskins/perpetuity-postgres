@@ -80,6 +80,14 @@ module Perpetuity
 
     def retrieve klass, criteria, options={}
       options.merge! from: klass, where: criteria
+      if options[:attribute]
+        options[:order] = options.delete(:attribute)
+        if direction = options.delete(:direction)
+          direction = direction.to_s[/\w{1,2}sc/i]
+          options[:order] = { options[:order] => direction }
+        end
+      end
+
       sql = select options
       connection.execute(sql).to_a
     rescue PG::UndefinedTable

@@ -122,6 +122,23 @@ module Perpetuity
         sql = postgres.select(from: 'Article', where: query, limit: 2)
         sql.should == %Q{SELECT * FROM "Article" WHERE TRUE LIMIT 2}
       end
+
+      describe 'ordering results' do
+        it 'orders results without a qualifier' do
+          sql = postgres.select(from: 'Article', order: :title)
+          sql.should == %Q{SELECT * FROM "Article" ORDER BY title}
+        end
+
+        it 'orders results with asc' do
+          sql = postgres.select(from: 'Article', order: { title: :asc })
+          sql.should == %Q{SELECT * FROM "Article" ORDER BY title ASC}
+        end
+
+        it 'reverse-orders results' do
+          sql = postgres.select(from: 'Article', order: { title: :desc })
+          sql.should == %Q{SELECT * FROM "Article" ORDER BY title DESC}
+        end
+      end
     end
   end
 end

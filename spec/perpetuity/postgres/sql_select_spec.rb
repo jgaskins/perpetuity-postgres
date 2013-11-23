@@ -25,6 +25,17 @@ module Perpetuity
         sql = SQLSelect.new('COUNT(*)', from: 'foo').to_s
         sql.should == %Q{SELECT COUNT(*) FROM "foo"}
       end
+
+      it 'generates a query with an ORDER BY clause' do
+        sql = SQLSelect.new(from: 'foo', order: 'name').to_s
+        sql.should == %Q{SELECT * FROM "foo" ORDER BY name}
+
+        sql = SQLSelect.new(from: 'foo', order: { name: :asc }).to_s
+        sql.should == %Q{SELECT * FROM "foo" ORDER BY name ASC}
+
+        sql = SQLSelect.new(from: 'foo', order: { name: :asc, age: :desc }).to_s
+        sql.should == %Q{SELECT * FROM "foo" ORDER BY name ASC,age DESC}
+      end
     end
   end
 end
