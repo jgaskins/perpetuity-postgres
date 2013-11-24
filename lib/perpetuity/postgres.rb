@@ -79,7 +79,16 @@ module Perpetuity
     end
 
     def retrieve klass, criteria, options={}
-      options.merge! from: klass, where: criteria
+      options = translate_options(options).merge from: klass, where: criteria
+
+      sql = select options
+      connection.execute(sql).to_a
+    rescue PG::UndefinedTable
+      []
+    end
+
+    def translate_options options
+      options = options.dup
       if options[:attribute]
         options[:order] = options.delete(:attribute)
         if direction = options.delete(:direction)
@@ -87,11 +96,11 @@ module Perpetuity
           options[:order] = { options[:order] => direction }
         end
       end
+      if options[:skip]
+        options[:offset] = options.delete(:skip)
+      end
 
-      sql = select options
-      connection.execute(sql).to_a
-    rescue PG::UndefinedTable
-      []
+      options
     end
 
     def select *args
