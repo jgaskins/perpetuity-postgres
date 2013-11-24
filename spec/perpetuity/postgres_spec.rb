@@ -110,6 +110,11 @@ module Perpetuity
         postgres.delete_all 'User'
         postgres.count('User').should == 0
       end
+
+      it 'deletes a record with a specific id' do
+        id = postgres.insert('User', data, attributes).first
+        expect { postgres.delete id, 'User' }.to change { postgres.count 'User' }.by -1
+      end
     end
 
     describe 'query generation' do

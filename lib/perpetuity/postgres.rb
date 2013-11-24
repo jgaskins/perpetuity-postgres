@@ -46,6 +46,13 @@ module Perpetuity
       raise e
     end
 
+    def delete id, klass
+      table = TableName.new(klass)
+      id_string = Serializer::TextValue.new(id)
+      sql = "DELETE FROM #{table} WHERE id = #{id_string}"
+      connection.execute(sql).to_a
+    end
+
     def count klass, query='TRUE', options={}, &block
       where = if block_given?
                 query(&block)
