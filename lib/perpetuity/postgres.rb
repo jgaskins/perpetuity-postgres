@@ -46,9 +46,15 @@ module Perpetuity
       raise e
     end
 
-    def count klass, &block
+    def count klass, query='TRUE', options={}, &block
+      where = if block_given?
+                query(&block)
+              else
+                query
+              end
+      options = translate_options(options).merge(from: klass, where: where)
       table = table_name(klass)
-      sql = select 'COUNT(*)', from: klass, where: query(&block)
+      sql = select 'COUNT(*)', options
       connection.execute(sql).to_a.first['count'].to_i
     rescue PG::UndefinedTable
       # Table does not exist, so there are 0 records
