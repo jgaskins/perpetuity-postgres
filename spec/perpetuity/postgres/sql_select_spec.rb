@@ -36,6 +36,16 @@ module Perpetuity
         sql = SQLSelect.new(from: 'foo', order: { name: :asc, age: :desc }).to_s
         sql.should == %Q{SELECT * FROM "foo" ORDER BY name ASC,age DESC}
       end
+
+      it 'generates a query with an OFFSET clause' do
+        sql = SQLSelect.new(from: 'foo', offset: 12).to_s
+        sql.should == %Q{SELECT * FROM "foo" OFFSET 12}
+      end
+
+      it 'generates a query with a GROUP BY clause' do
+        sql = SQLSelect.new(from: 'foo', group: :id).to_s
+        sql.should == %Q{SELECT * FROM "foo" GROUP BY id}
+      end
     end
   end
 end
