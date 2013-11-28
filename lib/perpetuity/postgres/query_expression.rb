@@ -16,7 +16,7 @@ module Perpetuity
         public_send comparator
       end
 
-      def sql_value
+      def sql_value value=self.value
         if value.is_a? String or value.is_a? Symbol
           SQLValue.new(value).to_s
         elsif value.is_a? Regexp
@@ -25,11 +25,7 @@ module Perpetuity
           SQLValue.new(value)
         elsif value.is_a? Array
           value.map! do |element|
-            if element.is_a? String
-              Serializer::TextValue.new(element)
-            else
-              element
-            end
+            sql_value(element)
           end
           "(#{value.join(',')})"
         else
