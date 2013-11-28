@@ -89,7 +89,7 @@ module Perpetuity
       end
 
       describe 'values' do
-        it 'compares against numbers' do
+        it 'compares against times' do
           expression.value = Time.new(2013, 1, 2, 3, 4, 5.1234567, '-05:00')
           expression.to_db.should == "attribute = '2013-01-02 03:04:05.123456-0500'::timestamptz"
         end
