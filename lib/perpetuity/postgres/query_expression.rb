@@ -20,7 +20,7 @@ module Perpetuity
         if value.is_a? String or value.is_a? Symbol
           SQLValue.new(value).to_s
         elsif value.is_a? Regexp
-          "'#{value.to_s.sub(/\A\(\?-mix\:/, '').sub(/\)\z/, '')}'"
+          "'#{value.to_s.sub(/\A\(\?i?-mi?x\:/, '').sub(/\)\z/, '')}'"
         elsif value.is_a? Time
           SQLValue.new(value)
         elsif value.is_a? Array
@@ -62,7 +62,12 @@ module Perpetuity
       end
 
       def =~
-        "#{attribute} ~ #{sql_value}"
+        regexp_comparator = if value.casefold?
+                              '~*'
+                            else
+                              '~'
+                            end
+        "#{attribute} #{regexp_comparator} #{sql_value}"
       end
 
       def | other

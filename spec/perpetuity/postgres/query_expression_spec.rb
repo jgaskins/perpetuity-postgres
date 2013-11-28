@@ -67,6 +67,9 @@ module Perpetuity
           expression.comparator = :=~
           expression.value = /value/
           expression.to_db.should == "attribute ~ 'value'"
+
+          expression.value = /value/i
+          expression.to_db.should == "attribute ~* 'value'"
         end
       end
 
