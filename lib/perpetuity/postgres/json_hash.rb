@@ -34,6 +34,8 @@ module Perpetuity
             JSONHash.new(value, :inner)
           elsif value.is_a? Class
             JSONStringValue.new(value.to_s)
+          elsif [true, false].include? value
+            value.to_s
           else
             value
           end

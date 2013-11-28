@@ -15,6 +15,10 @@ module Perpetuity
         JSONHash.new({a: 1}).to_s.should == %q{'{"a":1}'}
       end
 
+      it 'serializes hashes with boolean elements' do
+        JSONHash.new({a: true, b: false}).to_s.should == %q('{"a":true,"b":false}')
+      end
+
       it 'does not surround the an inner serialized value with quotes' do
         JSONHash.new({a: 1}, :inner).to_s.should == %q[{"a":1}]
       end
