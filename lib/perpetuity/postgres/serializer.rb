@@ -2,6 +2,7 @@ require 'perpetuity/postgres/sql_value'
 require 'perpetuity/postgres/serialized_data'
 require 'perpetuity/postgres/value_with_attribute'
 require 'perpetuity/postgres/json_array'
+require 'perpetuity/postgres/json_hash'
 require 'perpetuity/data_injectable'
 require 'json'
 
