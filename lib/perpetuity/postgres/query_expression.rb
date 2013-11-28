@@ -13,12 +13,20 @@ module Perpetuity
       end
 
       def to_db
-        public_send comparator
+        if value.nil?
+          if comparator == :==
+            "#{attribute} IS NULL"
+          elsif comparator == :!=
+            "#{attribute} IS NOT NULL"
+          end
+        else
+          public_send comparator
+        end
       end
 
       def sql_value value=self.value
         if value.is_a? String or value.is_a? Symbol
-          SQLValue.new(value).to_s
+          SQLValue.new(value)
         elsif value.is_a? Regexp
           "'#{value.to_s.sub(/\A\(\?i?-mi?x\:/, '').sub(/\)\z/, '')}'"
         elsif value.is_a? Time

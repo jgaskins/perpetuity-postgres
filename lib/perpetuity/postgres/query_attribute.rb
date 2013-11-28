@@ -21,6 +21,10 @@ METHOD
         QueryExpression.new self, :in, collection
       end
 
+      def nil?
+        QueryExpression.new self, :==, nil
+      end
+
       def to_s
         name.to_s
       end

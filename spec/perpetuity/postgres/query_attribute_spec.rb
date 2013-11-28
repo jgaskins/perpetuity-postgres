@@ -39,6 +39,10 @@ module Perpetuity
       it 'checks for inclusion' do
         (attribute.in [1, 2, 3]).should be_a QueryExpression
       end
+
+      it 'checks for nil' do
+        attribute.nil?.should be_a QueryExpression
+      end
     end
   end
 end

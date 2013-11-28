@@ -71,6 +71,14 @@ module Perpetuity
           expression.value = /value/i
           expression.to_db.should == "attribute ~* 'value'"
         end
+
+        it 'checks for nil' do
+          expression.value = nil
+          expression.to_db.should == "attribute IS NULL"
+
+          expression.comparator = :!=
+          expression.to_db.should == "attribute IS NOT NULL"
+        end
       end
 
       describe 'unions' do
