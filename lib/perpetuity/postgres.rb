@@ -3,6 +3,7 @@ require 'json'
 require 'perpetuity/postgres/connection'
 require 'perpetuity/postgres/serializer'
 require 'perpetuity/postgres/query'
+require 'perpetuity/postgres/negated_query'
 require 'perpetuity/postgres/table'
 require 'perpetuity/postgres/table/attribute'
 require 'perpetuity/postgres/sql_select'
@@ -88,7 +89,8 @@ module Perpetuity
       Query.new(&block)
     end
 
-    def negate_query
+    def negate_query &block
+      NegatedQuery.new(&block)
     end
 
     def retrieve klass, criteria, options={}
