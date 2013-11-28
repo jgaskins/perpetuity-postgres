@@ -1,4 +1,4 @@
-require_relative 'numeric_value'
+require 'perpetuity/postgres/numeric_value'
 require_relative 'json_string_value'
 require_relative 'json_hash'
 

@@ -1,5 +1,6 @@
 require 'perpetuity/postgres/text_value'
 require 'perpetuity/postgres/timestamp_value'
+require 'perpetuity/postgres/numeric_value'
 
 module Perpetuity
   class Postgres
@@ -11,6 +12,8 @@ module Perpetuity
                    TextValue.new(value)
                  elsif value.is_a? Time
                    TimestampValue.new(value)
+                 elsif value.is_a? Fixnum or value.is_a? Float
+                   NumericValue.new(value)
                  end.to_s
       end
 

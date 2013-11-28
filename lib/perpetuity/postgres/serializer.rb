@@ -1,7 +1,7 @@
+require 'perpetuity/postgres/sql_value'
 require 'perpetuity/postgres/serialized_data'
 require 'perpetuity/postgres/value_with_attribute'
 require 'perpetuity/postgres/text_value'
-require 'perpetuity/postgres/serializer/numeric_value'
 require 'perpetuity/postgres/serializer/null_value'
 require 'perpetuity/postgres/serializer/boolean_value'
 require 'perpetuity/postgres/serializer/json_array'
@@ -100,9 +100,9 @@ module Perpetuity
         value = object.value rescue object
 
         if value.is_a? String
-          TextValue.new(value)
+          SQLValue.new(value)
         elsif value.is_a? Numeric
-          NumericValue.new(value)
+          SQLValue.new(value)
         elsif value.is_a? Array
           serialize_array(object)
         elsif value.is_a? Time
