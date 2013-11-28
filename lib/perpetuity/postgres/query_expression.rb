@@ -1,6 +1,6 @@
 require 'perpetuity/postgres/query_union'
 require 'perpetuity/postgres/query_intersection'
-require 'perpetuity/postgres/serializer/text_value'
+require 'perpetuity/postgres/sql_value'
 
 module Perpetuity
   class Postgres
@@ -18,10 +18,11 @@ module Perpetuity
 
       def sql_value
         if value.is_a? String or value.is_a? Symbol
-          sanitized = value.to_s.gsub("'") { "\\'" }
-          "'#{sanitized}'"
+          SQLValue.new(value).to_s
         elsif value.is_a? Regexp
           "'#{value.to_s.sub(/\A\(\?-mix\:/, '').sub(/\)\z/, '')}'"
+        elsif value.is_a? Time
+          SQLValue.new(value)
         elsif value.is_a? Array
           value.map! do |element|
             if element.is_a? String

@@ -1,4 +1,4 @@
-require 'perpetuity/postgres/serializer/text_value'
+require 'perpetuity/postgres/text_value'
 
 module Perpetuity
   class Postgres
@@ -15,7 +15,7 @@ module Perpetuity
       end
 
       def []= column, value
-        value = Serializer::TextValue.new(value)
+        value = TextValue.new(value)
         if column_names.include? column
           index = column_names.index(column)
           values.first[index] = value

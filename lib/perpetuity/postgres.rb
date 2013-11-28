@@ -48,7 +48,7 @@ module Perpetuity
 
     def delete id, klass
       table = TableName.new(klass)
-      id_string = Serializer::TextValue.new(id)
+      id_string = TextValue.new(id)
       sql = "DELETE FROM #{table} WHERE id = #{id_string}"
       connection.execute(sql).to_a
     end

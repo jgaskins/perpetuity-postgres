@@ -1,11 +1,11 @@
 require 'perpetuity/postgres/serialized_data'
 require 'perpetuity/postgres/value_with_attribute'
-require 'perpetuity/postgres/serializer/text_value'
+require 'perpetuity/postgres/text_value'
 require 'perpetuity/postgres/serializer/numeric_value'
 require 'perpetuity/postgres/serializer/null_value'
 require 'perpetuity/postgres/serializer/boolean_value'
 require 'perpetuity/postgres/serializer/json_array'
-require 'perpetuity/postgres/serializer/timestamp_value'
+require 'perpetuity/postgres/timestamp_value'
 require 'perpetuity/data_injectable'
 require 'json'
 
