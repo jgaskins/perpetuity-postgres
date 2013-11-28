@@ -1,6 +1,8 @@
 require 'perpetuity/postgres/text_value'
 require 'perpetuity/postgres/timestamp_value'
 require 'perpetuity/postgres/numeric_value'
+require 'perpetuity/postgres/null_value'
+require 'perpetuity/postgres/boolean_value'
 
 module Perpetuity
   class Postgres
@@ -8,12 +10,17 @@ module Perpetuity
       attr_reader :value
 
       def initialize value
-        @value = if value.is_a? String or value.is_a? Symbol
+        @value = case value
+                 when String, Symbol
                    TextValue.new(value)
-                 elsif value.is_a? Time
+                 when Time
                    TimestampValue.new(value)
-                 elsif value.is_a? Fixnum or value.is_a? Float
+                 when Fixnum, Float
                    NumericValue.new(value)
+                 when nil
+                   NullValue.new
+                 when true, false
+                   BooleanValue.new(value)
                  end.to_s
       end
 

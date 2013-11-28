@@ -1,11 +1,7 @@
 require 'perpetuity/postgres/sql_value'
 require 'perpetuity/postgres/serialized_data'
 require 'perpetuity/postgres/value_with_attribute'
-require 'perpetuity/postgres/text_value'
-require 'perpetuity/postgres/serializer/null_value'
-require 'perpetuity/postgres/serializer/boolean_value'
-require 'perpetuity/postgres/serializer/json_array'
-require 'perpetuity/postgres/timestamp_value'
+require 'perpetuity/postgres/json_array'
 require 'perpetuity/data_injectable'
 require 'json'
 
@@ -106,11 +102,11 @@ module Perpetuity
         elsif value.is_a? Array
           serialize_array(object)
         elsif value.is_a? Time
-          TimestampValue.new(value)
+          SQLValue.new(value)
         elsif value.nil?
-          NullValue.new
+          SQLValue.new(value)
         elsif value == true || value == false
-          BooleanValue.new(value)
+          SQLValue.new(value)
         elsif !object.embedded?
           serialize_reference(value)
         elsif object.embedded?
