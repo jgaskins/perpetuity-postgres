@@ -11,7 +11,7 @@ module Perpetuity
     class Serializer
       include DataInjectable
 
-      SERIALIZABLE_CLASSES = [Fixnum, Float, String, Hash, Time, TrueClass, FalseClass, NilClass, Array]
+      SERIALIZABLE_CLASSES = [Fixnum, Float, String, Time, TrueClass, FalseClass, NilClass]
       attr_reader :mapper, :mapper_registry
 
       def initialize mapper
@@ -96,18 +96,10 @@ module Perpetuity
       def serialize_attribute object
         value = object.value rescue object
 
-        if value.is_a? String
-          SQLValue.new(value)
-        elsif value.is_a? Numeric
+        if SERIALIZABLE_CLASSES.include? value.class
           SQLValue.new(value)
         elsif value.is_a? Array
           serialize_array(object)
-        elsif value.is_a? Time
-          SQLValue.new(value)
-        elsif value.nil?
-          SQLValue.new(value)
-        elsif value == true || value == false
-          SQLValue.new(value)
         elsif !object.embedded?
           serialize_reference(value)
         elsif object.embedded?
