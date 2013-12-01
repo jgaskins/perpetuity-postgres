@@ -133,7 +133,7 @@ module Perpetuity
 
       it 'does not allow SQL injection' do
         query = postgres.query { |o| o.name == "' OR 1; --" }.to_db
-        query.should == "name = '\\' OR 1; --'"
+        query.should == "name = ''' OR 1; --'"
       end
 
       it 'limits results' do

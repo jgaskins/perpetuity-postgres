@@ -18,7 +18,7 @@ module Perpetuity
 
         it 'removes SQL injection from strings' do
           expression.value = "' OR 1; --"
-          expression.to_db.should == "attribute = '\\' OR 1; --'"
+          expression.to_db.should == "attribute = ''' OR 1; --'"
         end
 
         it 'translates equality to numbers' do

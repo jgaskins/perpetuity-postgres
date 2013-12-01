@@ -5,7 +5,7 @@ module Perpetuity
     describe SQLValue do
       it 'converts strings' do
         SQLValue.new('Foo').should == "'Foo'"
-        SQLValue.new("Jamie's House").should == "'Jamie\\'s House'"
+        SQLValue.new("Jamie's House").should == "'Jamie''s House'"
       end
 
       it 'converts symbols' do
