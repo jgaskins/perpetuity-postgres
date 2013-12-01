@@ -7,6 +7,7 @@ require 'perpetuity/postgres/negated_query'
 require 'perpetuity/postgres/table'
 require 'perpetuity/postgres/table/attribute'
 require 'perpetuity/postgres/sql_select'
+require 'perpetuity/postgres/sql_update'
 
 module Perpetuity
   class Postgres
@@ -100,6 +101,11 @@ module Perpetuity
       connection.execute(sql).to_a
     rescue PG::UndefinedTable
       []
+    end
+
+    def update klass, id, attributes
+      sql = SQLUpdate.new(klass, id, attributes).to_s
+      connection.execute(sql).to_a
     end
 
     def translate_options options

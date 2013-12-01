@@ -111,6 +111,14 @@ module Perpetuity
         postgres.count('User').should == 0
       end
 
+      it 'updates a specific record' do
+        id = postgres.insert('User', data, attributes).first
+        postgres.update 'User', id, name: 'foo'
+
+        retrieved = postgres.retrieve 'User', "id = '#{id}'"
+        retrieved.first['name'].should == 'foo'
+      end
+
       it 'deletes a record with a specific id' do
         id = postgres.insert('User', data, attributes).first
         expect { postgres.delete id, 'User' }.to change { postgres.count 'User' }.by -1
