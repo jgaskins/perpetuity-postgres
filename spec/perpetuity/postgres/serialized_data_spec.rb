@@ -38,6 +38,15 @@ module Perpetuity
           serialized_multiple.to_s.should == "(name,age) VALUES ('Jamie',31),('Jessica',23),('Kevin',22)"
         end
       end
+
+      it 'checks whether there are any objects' do
+        serialized.any?.should be_true
+      end
+
+      it 'maps values like a hash' do
+        serialized.map { |attr, value| [attr, value] }.should ==
+          [['name', "'Jamie'"], ['age', 31]]
+      end
     end
   end
 end

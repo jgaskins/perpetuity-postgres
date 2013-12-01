@@ -31,6 +31,17 @@ module Perpetuity
 
         combined
       end
+
+      def any?
+        values.any?
+      end
+
+      def map
+        data = values.first
+        mapped = Array.new(column_names.size)
+        column_names.each_with_index { |column, index| mapped[index] = yield(column, data[index]) }
+        mapped
+      end
     end
   end
 end
