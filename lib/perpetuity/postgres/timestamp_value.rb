@@ -8,6 +8,24 @@ module Perpetuity
         @time = time
       end
 
+      def self.from_sql sql_value
+        date, time = sql_value.split(/ /)
+        year, month, day = date.split(/-/)
+        hour, minute, seconds_with_offset = time.split(/:/)
+        second = seconds_with_offset[/\d+\.\d+/].to_f
+        offset = seconds_with_offset[/(\+|\-)\d+/] + ':00'
+
+        new Time.new(year, month, day, hour, minute, second, offset)
+      end
+
+      def to_time
+        time
+      end
+
+      def value
+        time
+      end
+
       def year
         time.year
       end
