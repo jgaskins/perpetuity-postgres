@@ -17,7 +17,8 @@ module Perpetuity
         if attributes.any?
           sql << " SET "
           sql << attributes.map do |name, value|
-            "#{name} = #{SQLValue.new(value)}"
+            value = SQLValue.new(value) if attributes.is_a? Hash
+            "#{name} = #{value}"
           end.join(',')
         end
         sql << " WHERE id = #{SQLValue.new(id)}"
