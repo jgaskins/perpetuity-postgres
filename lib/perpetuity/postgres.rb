@@ -148,6 +148,10 @@ module Perpetuity
       Serializer.new(mapper).serialize object
     end
 
+    def serialize_changed_attributes object, original, mapper
+      Serializer.new(mapper).serialize_changes object, original
+    end
+
     def unserialize data, mapper
       Serializer.new(mapper).unserialize data
     end

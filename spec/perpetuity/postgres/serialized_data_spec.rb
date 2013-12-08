@@ -43,9 +43,26 @@ module Perpetuity
         serialized.any?.should be_true
       end
 
-      it 'maps values like a hash' do
+      it 'iterates like a hash' do
         serialized.map { |attr, value| [attr, value] }.should ==
           [['name', "'Jamie'"], ['age', 31]]
+      end
+
+      it 'equals another with the same data' do
+        original = SerializedData.new([:a, :b], [1, 2])
+        duplicate = SerializedData.new([:a, :b], [1, 2])
+        modified = SerializedData.new([:a, :b], [0, 2])
+        original.should == duplicate
+        original.should_not == modified
+      end
+
+      it 'returns a new SerializedData with the complement of values' do
+        columns = [:name, :age, :foo, :bar]
+        original = SerializedData.new(columns, ["'Jamie'", 31, nil, nil])
+        new_name = SerializedData.new(columns, ["'Foo'", 31, nil, nil])
+        new_age = SerializedData.new(columns, ["'Jamie'", 32, nil, nil])
+        (new_name - original).should == SerializedData.new([:name], ["'Foo'"])
+        (new_age - original).should == SerializedData.new([:age], [32])
       end
     end
   end

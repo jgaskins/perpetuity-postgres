@@ -143,6 +143,14 @@ module Perpetuity
           serializer.possible_json_value?('foo is my name').should be_false
         end
       end
+
+      it 'serializes changes between two objects' do
+        original = Book.new('Old title')
+        modified = original.dup
+        modified.title = 'New title'
+        serializer.serialize_changes(modified, original).should ==
+          SerializedData.new([:title], ["'New title'"])
+      end
     end
   end
 end

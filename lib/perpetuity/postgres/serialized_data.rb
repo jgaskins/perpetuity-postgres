@@ -3,6 +3,7 @@ require 'perpetuity/postgres/text_value'
 module Perpetuity
   class Postgres
     class SerializedData
+      include Enumerable
       attr_reader :column_names, :values
       def initialize column_names, *values
         @column_names = column_names.map(&:to_s)
@@ -36,11 +37,26 @@ module Perpetuity
         values.any?
       end
 
-      def map
+      def each
         data = values.first
-        mapped = Array.new(column_names.size)
-        column_names.each_with_index { |column, index| mapped[index] = yield(column, data[index]) }
-        mapped
+        column_names.each_with_index { |column, index| yield(column, data[index]) }
+        self
+      end
+
+      def - other
+        values = self.values.first
+        modified_values = values - other.values.first
+        modified_columns = column_names.select.with_index { |col, index|
+          values[index] != other.values.first[index]
+        }
+
+        SerializedData.new(modified_columns, modified_values)
+      end
+
+      def == other
+        other.is_a? SerializedData and
+        other.column_names == column_names and
+        other.values == values
       end
     end
   end

@@ -155,6 +155,10 @@ module Perpetuity
 
         JSONHash.new(attr)
       end
+
+      def serialize_changes modified, original
+        serialize(modified) - serialize(original)
+      end
     end
   end
 end
