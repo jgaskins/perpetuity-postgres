@@ -35,7 +35,9 @@ module Perpetuity
           data.map do |datum|
             object = mapper.mapped_class.allocate
             datum.each do |attribute_name, value|
-              inject_attribute object, attribute_name, unserialize_attribute(value)
+              attribute = mapper.attribute_set[attribute_name.to_sym]
+              deserialized_value = unserialize_attribute(attribute, value)
+              inject_attribute object, attribute_name, deserialized_value
             end
 
             object
@@ -45,17 +47,22 @@ module Perpetuity
         end
       end
 
-      def unserialize_attribute value
+      def unserialize_attribute attribute, value
         if possible_json_value?(value)
           value = JSON.parse(value) rescue value
           if value.is_a? Array
-            value = value.map { |v| unserialize_attribute(v) }
-          else
-            value
+            value = value.map { |v| unserialize_attribute(attribute, v) }
           end
         end
         if foreign_object? value
           value = unserialize_foreign_object value
+        end
+        if attribute
+          if attribute.type == Integer
+            value = value.to_i
+          elsif attribute.type == Time
+            value = TimestampValue.from_sql(value).to_time
+          end
         end
 
         value

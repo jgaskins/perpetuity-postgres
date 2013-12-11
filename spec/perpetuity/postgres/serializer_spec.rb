@@ -118,6 +118,56 @@ module Perpetuity
           deserialized_book = Book.new('My Book', [], Reference.new(Person, 'id-id-id'))
           serializer.unserialize(serialized_book).should == deserialized_book
         end
+
+        let(:article_class) do
+          Class.new do
+            attr_reader :title, :body, :views, :published_at
+            def initialize attributes={}
+              @title = attributes[:title]
+              @body = attributes[:body]
+              @views = attributes.fetch(:views) { 0 }
+              @published_at = attributes.fetch(:published_at) { Time.now }
+            end
+
+            def == other
+              other.is_a?(self.class) &&
+              other.title == title &&
+              other.body == body &&
+              other.views == views &&
+              other.published_at == published_at
+            end
+          end
+        end
+        let(:article_mapper) do
+          article_class = self.article_class
+          registry = self.registry
+          Class.new(Mapper) do
+            map article_class, registry
+            attribute :title, type: String
+            attribute :body, type: String
+            attribute :views, type: Integer
+            attribute :published_at, type: Time
+          end.new(registry)
+        end
+
+        it 'deserializes non-string attributes to their proper types' do
+          serializer = Serializer.new(article_mapper)
+          serialized_article = {
+            'id' => 'id-id-id',
+            'title' => 'Title',
+            'body' => 'Body',
+            'views' => '0',
+            'published_at' => '2013-01-02 03:04:05.123456-05'
+          }
+
+          article = article_class.new(
+            title: 'Title',
+            body: 'Body',
+            views: 0,
+            published_at: Time.new(2013, 1, 2, 3, 4, 5.123456, '-05:00')
+          )
+          serializer.unserialize(serialized_article).should == article
+        end
       end
 
       describe 'identifying embedded/referenced objects as foreign' do
