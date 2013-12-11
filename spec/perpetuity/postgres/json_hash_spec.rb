@@ -30,6 +30,10 @@ module Perpetuity
       it 'converts back to a hash' do
         JSONHash.new({a: 1}).to_hash.should == { a: 1 }
       end
+
+      it 'is equal to an identical hash' do
+        JSONHash.new(a: 1).should == JSONHash.new(a: 1)
+      end
     end
   end
 end

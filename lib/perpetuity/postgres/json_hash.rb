@@ -45,6 +45,11 @@ module Perpetuity
       def to_str
         to_s
       end
+
+      def == other
+        other.is_a? self.class and
+        other.to_hash == to_hash
+      end
     end
   end
 end

@@ -151,6 +151,16 @@ module Perpetuity
         serializer.serialize_changes(modified, original).should ==
           SerializedData.new([:title], ["'New title'"])
       end
+
+      it 'serializes a reference as its referenced class' do
+        reference = Reference.new(Object, 123)
+        serializer.serialize_reference(reference).should == JSONHash.new(
+          __metadata__: {
+            class: Object,
+            id: 123
+          }
+        )
+      end
     end
   end
 end

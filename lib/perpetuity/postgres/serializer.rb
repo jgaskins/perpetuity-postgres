@@ -133,13 +133,19 @@ module Perpetuity
       end
 
       def serialize_reference value
+        klass = if value.is_a? Reference
+                  value.klass
+                else
+                  value.class
+                end
+
         unless mapper.persisted? value
           mapper_registry[value.class].insert value
         end
 
         json = {
           __metadata__: {
-            class: value.class,
+            class: klass,
             id: mapper.id_for(value)
           }
         }
