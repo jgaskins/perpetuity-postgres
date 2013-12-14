@@ -12,7 +12,7 @@ module Perpetuity
         let(:host)      { double('host') }
         let(:port)      { double('port') }
         let(:db)        { double('db') }
-        let(:pool_size) { double('pool size') }
+        let(:pool_size) { 5 }
         let(:username)  { double('username') }
         let(:password)  { double('password') }
         let(:postgres) do

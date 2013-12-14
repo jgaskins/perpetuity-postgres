@@ -1,6 +1,6 @@
 require 'perpetuity'
 require 'json'
-require 'perpetuity/postgres/connection'
+require 'perpetuity/postgres/connection_pool'
 require 'perpetuity/postgres/serializer'
 require 'perpetuity/postgres/query'
 require 'perpetuity/postgres/negated_query'
@@ -22,12 +22,13 @@ module Perpetuity
       @username  = options.fetch(:username) { ENV['USER'] }
       @password  = options.fetch(:password) {}
 
-      @connection ||= Connection.new(
+      @connection ||= ConnectionPool.new(
         db:       db,
         host:     host,
         port:     port,
         username: username,
         password: password,
+        pool_size: pool_size
       )
     end
 
