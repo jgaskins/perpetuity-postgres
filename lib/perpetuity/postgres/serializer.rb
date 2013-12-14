@@ -48,24 +48,26 @@ module Perpetuity
       end
 
       def unserialize_attribute attribute, value
-        if possible_json_value?(value)
-          value = JSON.parse(value) rescue value
-          if value.is_a? Array
-            value = value.map { |v| unserialize_attribute(attribute, v) }
+        if value
+          if possible_json_value?(value)
+            value = JSON.parse(value) rescue value
+            if value.is_a? Array
+              value = value.map { |v| unserialize_attribute(attribute, v) }
+            end
           end
-        end
-        if foreign_object? value
-          value = unserialize_foreign_object value
-        end
-        if attribute
-          if attribute.type == Integer
-            value = value.to_i
-          elsif attribute.type == Time
-            value = TimestampValue.from_sql(value).to_time
+          if foreign_object? value
+            value = unserialize_foreign_object value
           end
-        end
+          if attribute
+            if attribute.type == Integer
+              value = value.to_i
+            elsif attribute.type == Time
+              value = TimestampValue.from_sql(value).to_time
+            end
+          end
 
-        value
+          value
+        end
       end
 
       def possible_json_value? value
