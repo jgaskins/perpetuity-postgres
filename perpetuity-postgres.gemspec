@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["jgaskins@gmail.com"]
   spec.description   = %q{PostgreSQL adapter for Perpetuity}
   spec.summary       = %q{PostgreSQL adapter for Perpetuity}
-  spec.homepage      = ""
+  spec.homepage      = "https://github.com/jgaskins/perpetuity-postgres"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
