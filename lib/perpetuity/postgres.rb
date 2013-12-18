@@ -47,6 +47,26 @@ module Perpetuity
       create_table_with_attributes klass, attributes
       retry unless retries > 1
       raise e
+    rescue PG::UndefinedColumn => e
+      retries ||= 0
+      retries += 1
+      error ||= nil
+
+      # column "timestamp" of relation "Article" does not exist
+      if retries > 1 && e.message == error
+        p retries
+        raise e
+      else
+        error = e.message
+        if error =~ /column "(.+)" of relation "(.+)" does not exist/
+          column_name = $1
+          table_name = $2
+          add_column table_name, column_name, attributes
+          retry
+        else
+          raise e
+        end
+      end
     end
 
     def delete id, klass
@@ -165,6 +185,14 @@ module Perpetuity
         Table::Attribute.new name, type, options
       end
       create_table klass.to_s, table_attributes
+    end
+
+    def add_column table_name, column_name, attributes
+      attr = attributes.detect { |a| a.name.to_s == column_name.to_s }
+      column = Table::Attribute.new(attr.name, attr.type, attr.options)
+
+      sql = %Q(ALTER TABLE "#{table_name}" ADD #{column.sql_declaration})
+      connection.execute sql
     end
   end
 end

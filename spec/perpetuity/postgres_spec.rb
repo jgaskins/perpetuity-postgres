@@ -59,6 +59,25 @@ module Perpetuity
       postgres.should_not have_table 'Article'
     end
 
+    it 'adds columns automatically if they are not there' do
+      attributes = [
+        Postgres::Table::Attribute.new('title', String, max_length: 40),
+        Postgres::Table::Attribute.new('body', String),
+        Postgres::Table::Attribute.new('author', Object)
+      ]
+      postgres.drop_table 'Article'
+      postgres.create_table 'Article', attributes
+
+      attributes << Attribute.new('timestamp', Time)
+      data = [Postgres::SerializedData.new([:title, :timestamp],
+                                           ["'Jamie'", "'2013-1-1'"])]
+      id = postgres.insert('Article', data, attributes).first
+
+      postgres.find('Article', id)['timestamp'].should =~ /2013/
+
+      postgres.drop_table 'Article' # Cleanup
+    end
+
     it 'converts values into something that works with the DB' do
       postgres.postgresify("string").should == "'string'"
       postgres.postgresify(1).should == '1'
