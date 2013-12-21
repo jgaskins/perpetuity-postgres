@@ -22,8 +22,12 @@ module Perpetuity
             else
               'TEXT'
             end
-          elsif type == Integer
-            'INTEGER'
+          elsif type == Integer or type == Fixnum
+            'BIGINT'
+          elsif type == Bignum or type == BigDecimal
+            'NUMERIC'
+          elsif type == Float
+            'FLOAT'
           elsif type == UUID
             'UUID'
           elsif type == Time

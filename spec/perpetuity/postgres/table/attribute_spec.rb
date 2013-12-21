@@ -55,9 +55,21 @@ module Perpetuity
 
         describe 'integers' do
           let(:page_views) { Attribute.new('page_views', Integer, default: 0) }
+          let(:public_key) { Attribute.new('public_key', Bignum) }
 
           it 'generates the proper SQL' do
-            page_views.sql_declaration.should == 'page_views INTEGER DEFAULT 0'
+            page_views.sql_declaration.should == 'page_views BIGINT DEFAULT 0'
+            public_key.sql_declaration.should == 'public_key NUMERIC'
+          end
+        end
+
+        describe 'floating-point numbers' do
+          let(:pi) { Attribute.new('pi', Float) }
+          let(:precise_pi) { Attribute.new('precise_pi', BigDecimal) }
+
+          it 'generates the proper SQL' do
+            pi.sql_declaration.should == 'pi FLOAT'
+            precise_pi.sql_declaration.should == 'precise_pi DECIMAL'
           end
         end
 
