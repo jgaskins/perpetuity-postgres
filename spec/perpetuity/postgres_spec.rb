@@ -104,7 +104,7 @@ module Perpetuity
 
       describe 'returning ids' do
         it 'returns the ids of all items saved' do
-          self.data << Postgres::SerializedData.new([:name], ["'Jessica'"]) <<
+          data << Postgres::SerializedData.new([:name], ["'Jessica'"]) <<
           Postgres::SerializedData.new([:name], ["'Kevin'"])
           ids = postgres.insert('User', data, attributes)
           ids.should be_a Array
