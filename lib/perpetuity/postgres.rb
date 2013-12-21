@@ -52,21 +52,20 @@ module Perpetuity
       retries += 1
       error ||= nil
 
-      # column "timestamp" of relation "Article" does not exist
       if retries > 1 && e.message == error
-        p retries
-        raise e
-      else
-        error = e.message
-        if error =~ /column "(.+)" of relation "(.+)" does not exist/
-          column_name = $1
-          table_name = $2
-          add_column table_name, column_name, attributes
-          retry
-        else
-          raise e
-        end
+        # We've retried more than once and we're getting the same error
+        raise
       end
+
+      error = e.message
+      if error =~ /column "(.+)" of relation "(.+)" does not exist/
+        column_name = $1
+        table_name = $2
+        add_column table_name, column_name, attributes
+        retry
+      end
+
+      raise
     end
 
     def delete id, klass
