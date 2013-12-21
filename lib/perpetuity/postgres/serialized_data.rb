@@ -27,7 +27,7 @@ module Perpetuity
       end
 
       def + other
-        combined = dup
+        combined = self.class.new(column_names.dup, *(values.dup))
         combined.values << other.values
 
         combined

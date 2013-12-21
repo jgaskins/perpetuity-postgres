@@ -29,13 +29,18 @@ module Perpetuity
           [ SerializedData.new(columns, ["'Jamie'", 31]),
             SerializedData.new(columns, ["'Jessica'", 23]),
             SerializedData.new(columns, ["'Kevin'", 22]),
-          ].reduce(:+)
+          ]
         end
-        let(:serialized_multiple) { serialized + SerializedData.new(columns, ["'Jessica'", 23]) +
-                                                 SerializedData.new(columns, ["'Kevin'",22])}
 
         it 'matches a SQL string' do
-          serialized_multiple.to_s.should == "(name,age) VALUES ('Jamie',31),('Jessica',23),('Kevin',22)"
+          serialized_multiple.reduce(:+).to_s.should ==
+            "(name,age) VALUES ('Jamie',31),('Jessica',23),('Kevin',22)"
+        end
+
+        it 'does not modify the first value' do
+          jamie_values = serialized_multiple.first.values.dup
+          serialized_multiple.reduce(:+)
+          serialized_multiple.first.values.should == jamie_values
         end
       end
 
