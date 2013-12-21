@@ -60,13 +60,15 @@ module Perpetuity
     end
 
     it 'adds columns automatically if they are not there' do
-      attributes = [
-        Postgres::Table::Attribute.new('title', String, max_length: 40),
-        Postgres::Table::Attribute.new('body', String),
-        Postgres::Table::Attribute.new('author', Object)
-      ]
+      attributes = AttributeSet.new
+      attributes << Attribute.new('title', String, max_length: 40)
+      attributes << Attribute.new('body', String)
+      attributes << Attribute.new('author', Object)
+
       postgres.drop_table 'Article'
-      postgres.create_table 'Article', attributes
+      postgres.create_table 'Article', attributes.map { |attr|
+        Postgres::Table::Attribute.new(attr.name, attr.type, attr.options)
+      }
 
       attributes << Attribute.new('timestamp', Time)
       data = [Postgres::SerializedData.new([:title, :timestamp],
@@ -85,8 +87,12 @@ module Perpetuity
     end
 
     describe 'working with data' do
-      let(:attributes) { [Attribute.new(:name, String)] }
+      let(:attributes) { AttributeSet.new }
       let(:data) { [Postgres::SerializedData.new([:name], ["'Jamie'"])] }
+
+      before do
+        attributes << Attribute.new(:name, String)
+      end
 
       it 'inserts data and finds by id' do
         id = postgres.insert('User', data, attributes).first
@@ -96,12 +102,23 @@ module Perpetuity
         result['name'].should == 'Jamie'
       end
 
-      it 'returns the ids of all items saved' do
-        self.data << Postgres::SerializedData.new([:name], ["'Jessica'"]) <<
-                     Postgres::SerializedData.new([:name], ["'Kevin'"])
-        ids = postgres.insert('User', data, attributes)
-        ids.should be_a Array
-        ids.should have(3).items
+      describe 'returning ids' do
+        it 'returns the ids of all items saved' do
+          self.data << Postgres::SerializedData.new([:name], ["'Jessica'"]) <<
+          Postgres::SerializedData.new([:name], ["'Kevin'"])
+          ids = postgres.insert('User', data, attributes)
+          ids.should be_a Array
+          ids.should have(3).items
+        end
+
+        it 'returns numeric ids when numeric ids are specified' do
+          postgres.drop_table 'User'
+          attributes << Attribute.new(:id, Integer)
+          data.first[:id] = 1234
+          ids = postgres.insert 'User', data, attributes
+          ids.first.should == 1234
+          postgres.drop_table 'User'
+        end
       end
 
       it 'counts objects' do

@@ -38,7 +38,7 @@ module Perpetuity
       sql = "INSERT INTO #{table} #{data} RETURNING id"
 
       results = connection.execute(sql).to_a
-      ids = results.map { |result| result['id'] }
+      ids = results.map { |result| cast_id(result['id'], attributes[:id]) }
 
       ids
     rescue PG::UndefinedTable => e # Table doesn't exist, so we create it.
@@ -170,6 +170,16 @@ module Perpetuity
 
     def serialize_changed_attributes object, original, mapper
       Serializer.new(mapper).serialize_changes object, original
+    end
+
+    def cast_id id, id_attribute
+      return id if id_attribute.nil?
+
+      if [Bignum, Fixnum, Integer].include? id_attribute.type
+        id.to_i
+      else
+        id
+      end
     end
 
     def unserialize data, mapper
