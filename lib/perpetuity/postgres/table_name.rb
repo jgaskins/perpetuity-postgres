@@ -1,8 +1,10 @@
 module Perpetuity
   class Postgres
+    InvalidTableName = Class.new(StandardError)
     class TableName
       def initialize name
         @name = name.to_s
+        raise InvalidTableName, "PostgreSQL table name cannot contain double quotes" if @name.include? '"'
       end
 
       def to_s
