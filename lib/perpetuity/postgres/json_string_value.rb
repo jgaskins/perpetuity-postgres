@@ -2,7 +2,7 @@ module Perpetuity
   class Postgres
     class JSONStringValue
       def initialize value
-        @value = value
+        @value = value.to_s.gsub('"') { '\\"' }
       end
 
       def to_s
