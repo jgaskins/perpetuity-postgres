@@ -69,7 +69,7 @@ module Perpetuity
 
           it 'generates the proper SQL' do
             pi.sql_declaration.should == 'pi FLOAT'
-            precise_pi.sql_declaration.should == 'precise_pi DECIMAL'
+            precise_pi.sql_declaration.should == 'precise_pi NUMERIC'
           end
         end
 
