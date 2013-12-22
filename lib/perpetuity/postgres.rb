@@ -186,6 +186,12 @@ module Perpetuity
       Serializer.new(mapper).unserialize data
     end
 
+    def increment klass, id, attribute, count=1
+      table = TableName.new(klass)
+      sql = %Q{UPDATE #{table} SET #{attribute} = #{attribute} + #{count} WHERE id = #{SQLValue.new(id)} RETURNING #{attribute}}
+      connection.execute(sql).to_a
+    end
+
     def create_table_with_attributes klass, attributes
       table_attributes = attributes.map do |attr|
         name = attr.name

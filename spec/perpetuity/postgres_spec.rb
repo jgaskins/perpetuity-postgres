@@ -159,6 +159,21 @@ module Perpetuity
         id = postgres.insert('User', data, attributes).first
         expect { postgres.delete id, 'User' }.to change { postgres.count 'User' }.by -1
       end
+
+      describe 'incrementing/decrementing' do
+        let(:attributes) { AttributeSet.new }
+        let(:data) { [Postgres::SerializedData.new([:n], [1])] }
+
+        before do
+          attributes << Attribute.new(:n, Fixnum)
+        end
+
+        it 'increments a value for a record' do
+          id = postgres.insert('Increment', data, attributes).first
+          postgres.increment 'Increment', id, :n, 10
+          postgres.find('Increment', id)['n'].should == '11'
+        end
+      end
     end
 
     describe 'query generation' do
