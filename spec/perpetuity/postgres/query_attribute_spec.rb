@@ -40,6 +40,14 @@ module Perpetuity
         (attribute.in [1, 2, 3]).should be_a QueryExpression
       end
 
+      it 'checks for existence' do
+        (attribute.any?).to_db.should == 'json_array_length(attribute_name) > 0'
+      end
+
+      it 'checks for no existence' do
+        (attribute.none?).to_db.should == 'json_array_length(attribute_name) = 0'
+      end
+
       it 'checks for nil' do
         attribute.nil?.should be_a QueryExpression
       end

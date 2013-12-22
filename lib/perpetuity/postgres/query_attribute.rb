@@ -1,4 +1,5 @@
 require 'perpetuity/postgres/query_expression'
+require 'perpetuity/postgres/sql_function'
 
 module Perpetuity
   class Postgres
@@ -23,6 +24,18 @@ METHOD
 
       def nil?
         QueryExpression.new self, :==, nil
+      end
+
+      def count
+        SQLFunction.new('json_array_length', self)
+      end
+
+      def any?
+        QueryExpression.new count, :>, 0
+      end
+
+      def none?
+        QueryExpression.new count, :==, 0
       end
 
       def to_s
