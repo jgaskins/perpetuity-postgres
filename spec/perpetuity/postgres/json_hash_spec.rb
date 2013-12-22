@@ -19,6 +19,10 @@ module Perpetuity
         JSONHash.new({a: true, b: false}).to_s.should == %q('{"a":true,"b":false}')
       end
 
+      it 'serializes nil values' do
+        JSONHash.new({a: nil}).to_s.should == %q('{"a":null}')
+      end
+
       it 'does not surround the an inner serialized value with quotes' do
         JSONHash.new({a: 1}, :inner).to_s.should == %q[{"a":1}]
       end

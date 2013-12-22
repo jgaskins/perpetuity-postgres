@@ -59,7 +59,7 @@ module Perpetuity
             value = unserialize_foreign_object value
           end
           if attribute
-            if attribute.type == Integer
+            if [Fixnum, Bignum, Integer].include? attribute.type
               value = value.to_i
             elsif attribute.type == Time
               value = TimestampValue.from_sql(value).to_time

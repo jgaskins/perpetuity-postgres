@@ -36,6 +36,8 @@ module Perpetuity
             JSONStringValue.new(value.to_s)
           elsif [true, false].include? value
             value.to_s
+          elsif value.nil?
+            'null'
           else
             value
           end
