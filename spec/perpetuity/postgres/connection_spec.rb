@@ -15,6 +15,7 @@ module Perpetuity
 
       it 'is only activated when it is used' do
         connection.should_not be_active
+        PG.stub(connect: true)
         connection.connect
         connection.should be_active
       end
