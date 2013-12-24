@@ -19,9 +19,6 @@ module Perpetuity
 
       def connect
         @pg_connection = PG.connect(options)
-        use_uuid_extension
-
-        @pg_connection
       rescue PG::ConnectionBad => e
         tries ||= 0
         conn = PG.connect
@@ -41,6 +38,13 @@ module Perpetuity
 
       def execute sql
         pg_connection.exec sql
+      rescue PG::UndefinedFunction => e
+        if e.message =~ /uuid_generate/
+          use_uuid_extension
+          retry
+        else
+          raise
+        end
       end
 
       def tables
