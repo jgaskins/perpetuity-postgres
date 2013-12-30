@@ -76,7 +76,7 @@ module Perpetuity
 
       private
       def use_uuid_extension
-        @pg_connection.exec 'CREATE EXTENSION "uuid-ossp"'
+        execute 'CREATE EXTENSION "uuid-ossp"'
       rescue PG::DuplicateObject
         # Ignore. It just means the extension's already been loaded.
       end
