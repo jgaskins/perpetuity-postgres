@@ -187,7 +187,7 @@ module Perpetuity
       if options[:attribute]
         options[:order] = options.delete(:attribute)
         if direction = options.delete(:direction)
-          direction = direction.to_s[/\w{1,2}sc/i]
+          direction = direction.to_s[/(asc|desc)/i]
           options[:order] = { options[:order] => direction }
         end
       end
