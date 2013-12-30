@@ -8,6 +8,8 @@ require 'perpetuity/postgres/table'
 require 'perpetuity/postgres/table/attribute'
 require 'perpetuity/postgres/sql_select'
 require 'perpetuity/postgres/sql_update'
+require 'perpetuity/postgres/index_collection'
+require 'perpetuity/postgres/index'
 
 module Perpetuity
   class Postgres
@@ -128,6 +130,58 @@ module Perpetuity
       connection.execute(sql).to_a
     end
 
+    def index klass, attributes, options={}
+      name = "#{klass}_#{Array(attributes).map(&:name).join('_')}_idx"
+      index = Index.new(name: name,
+                        attributes: Array(attributes),
+                        unique: !!options[:unique],
+                        active: false)
+      indexes(klass) << index
+      index
+    end
+
+    def indexes klass
+      @indexes ||= {}
+      @indexes[klass] ||= IndexCollection.new(klass)
+    end
+
+    def activate_index! index
+      sql = "CREATE "
+      sql << "UNIQUE " if index.unique?
+      sql << "INDEX ON #{TableName.new(index.table)} (#{index.attribute_names.join(',')})"
+      connection.execute(sql)
+      index.activate!
+    rescue PG::UndefinedTable => e
+      create_table_with_attributes index.table, index.attributes
+      retry
+    end
+
+    def active_indexes table
+      sql = <<-SQL
+      SELECT pg_class.relname AS name,
+             ARRAY(
+               SELECT pg_get_indexdef(pg_index.indexrelid, k + 1, true)
+               FROM generate_subscripts(pg_index.indkey, 1) AS k
+               ORDER BY k
+             ) AS attributes,
+             pg_index.indisunique AS unique,
+             pg_index.indisready AS active
+      FROM pg_class
+      INNER JOIN pg_index ON pg_class.oid = pg_index.indexrelid
+      WHERE pg_class.relname ~ '^#{table}.*idx$'
+      SQL
+
+      indexes = connection.execute(sql).map do |index|
+        Index.from_sql(index)
+      end
+      IndexCollection.new(table, indexes)
+    end
+
+    def remove_index index
+      sql = %Q{DROP INDEX IF EXISTS #{TableName.new(index.name)}}
+      connection.execute(sql)
+    end
+
     def translate_options options
       options = options.dup
       if options[:attribute]
@@ -151,6 +205,7 @@ module Perpetuity
     def drop_table name
       connection.execute "DROP TABLE IF EXISTS #{table_name(name)}"
     end
+    alias :drop_collection :drop_table
 
     def create_table name, attributes
       connection.execute Table.new(name, attributes).create_table_sql

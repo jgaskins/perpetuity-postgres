@@ -210,5 +210,58 @@ module Perpetuity
         end
       end
     end
+
+    describe 'indexes' do
+      let(:title) { Postgres::Table::Attribute.new('title', String) }
+
+      before do
+        postgres.drop_table Object
+        postgres.create_table Object, [title]
+      end
+
+      after do
+        postgres.drop_table Object
+      end
+
+      it 'retrieves the active indexes from the database' do
+        index = postgres.index(Object, Attribute.new(:title, String), unique: true)
+        postgres.activate_index! index
+
+        active_indexes = postgres.active_indexes(Object)
+        index = active_indexes.find { |i| i.attribute_names == ['title'] }
+        index.attribute_names.should == ['title']
+        index.table.should == 'Object'
+        index.should be_unique
+        index.should be_active
+      end
+
+      describe 'adding indexes to the database' do
+        it 'adds an inactive index to the database' do
+          title_attribute = Attribute.new(:title, String)
+          postgres.index Object, title_attribute
+          index = postgres.indexes(Object).find { |i| i.attributes.map(&:name) == [:title] }
+          index.attribute_names.should == ['title']
+          index.table.should == 'Object'
+          index.should_not be_unique
+          index.should_not be_active
+        end
+
+        it 'activates the specified index' do
+          title_attribute = Attribute.new(:title, String)
+          index = postgres.index Object, title_attribute
+          postgres.activate_index! index
+          postgres.active_indexes(Object).map(&:attribute_names).should include ['title']
+        end
+      end
+
+      describe 'removing indexes' do
+        it 'removes the specified index' do
+          index = postgres.index(Object, Attribute.new(:title, String))
+          postgres.activate_index! index
+          postgres.remove_index index
+          postgres.active_indexes(Object).map(&:attribute_names).should_not include ['title']
+        end
+      end
+    end
   end
 end
