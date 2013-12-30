@@ -21,7 +21,10 @@ module Perpetuity
         @pg_connection = PG.connect(options)
       rescue PG::ConnectionBad => e
         tries ||= 0
-        conn = PG.connect
+        connect_options = options.dup
+        connect_options.delete :dbname
+
+        conn = PG.connect connect_options
         conn.exec "CREATE DATABASE #{db}"
         conn.close
 
