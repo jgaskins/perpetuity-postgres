@@ -41,6 +41,10 @@ METHOD
       def to_s
         name.to_s
       end
+
+      def to_db
+        (self != nil).to_db
+      end
     end
   end
 end

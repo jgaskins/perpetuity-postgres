@@ -51,6 +51,10 @@ module Perpetuity
       it 'checks for nil' do
         attribute.nil?.should be_a QueryExpression
       end
+
+      it 'checks for truthiness' do
+        attribute.to_db.should == 'attribute_name IS NOT NULL'
+      end
     end
   end
 end
