@@ -84,6 +84,10 @@ module Perpetuity
         it 'serializes an array as JSON' do
           serializer.serialize_attribute([1, 'foo']).should == %q{'[1,"foo"]'}
         end
+
+        it 'serializes a hash as JSON' do
+          serializer.serialize_attribute(a: 1, foo: ['bar']).should == %q{'{"a":1,"foo":["bar"]}'}
+        end
       end
 
       describe 'unserialization AKA deserialization' do

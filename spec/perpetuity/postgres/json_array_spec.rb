@@ -23,6 +23,10 @@ module Perpetuity
         JSONArray.new([JSONHash.new(a: 1)]).to_s.should == %q{'[{"a":1}]'}
       end
 
+      it 'serializes arrays of arrays' do
+        JSONArray.new([[1], ['foo']]).to_s.should == %q{'[[1],["foo"]]'}
+      end
+
       it 'serializes elements of arrays' do
         JSONArray.new([1,'a']).to_s.should == %q{'[1,"a"]'}
       end

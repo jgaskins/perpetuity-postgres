@@ -1,30 +1,38 @@
-require 'perpetuity/postgres/numeric_value'
 require 'perpetuity/postgres/json_string_value'
-require 'perpetuity/postgres/json_hash'
+require 'perpetuity/postgres/sql_value'
 
 module Perpetuity
   class Postgres
     class JSONArray
-      def initialize value
+      def initialize value, position=:outer
         @value = value
+        @position = position
       end
 
       def to_s
-        "'[#{serialize_elements}]'"
+        if @position == :outer
+          "'#{to_inner_array}'"
+        else
+          to_inner_array
+        end
+      end
+
+      def to_inner_array
+        "[#{serialize_elements}]"
       end
 
       def serialize_elements
         @value.map do |element|
-          if element.is_a? Numeric
-            NumericValue.new(element)
-          elsif element.is_a? String
+          if element.is_a? String
             JSONStringValue.new(element)
-          elsif element.is_a? Hash
-            JSONHash.new(element, :inner)
-          elsif element.is_a? JSONHash
-            JSONHash.new(element.to_hash, :inner)
+          else
+            SQLValue.new(element)
           end
         end.join(',')
+      end
+
+      def to_a
+        @value
       end
     end
   end

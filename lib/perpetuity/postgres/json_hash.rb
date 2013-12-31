@@ -1,5 +1,5 @@
+require 'perpetuity/postgres/sql_value'
 require 'perpetuity/postgres/json_string_value'
-require 'perpetuity/postgres/numeric_value'
 
 module Perpetuity
   class Postgres
@@ -26,20 +26,14 @@ module Perpetuity
           string = ''
           string << JSONStringValue.new(key) << ':'
 
-          string << if value.is_a? Numeric
-                      NumericValue.new(value)
-          elsif value.is_a? String
-            JSONStringValue.new(value)
-          elsif value.is_a? Hash
-            JSONHash.new(value, :inner)
-          elsif value.is_a? Class
+          string << if [String, Class].include? value.class
             JSONStringValue.new(value.to_s)
           elsif [true, false].include? value
             value.to_s
           elsif value.nil?
             'null'
           else
-            value
+            SQLValue.new(value).to_s
           end
         end.join(',')
       end

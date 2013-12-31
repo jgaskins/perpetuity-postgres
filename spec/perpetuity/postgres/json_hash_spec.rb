@@ -31,6 +31,11 @@ module Perpetuity
         JSONHash.new({a: 1, b: 'c'}).to_s.should == %q{'{"a":1,"b":"c"}'}
       end
 
+      it 'serializes a hash with array values' do
+        JSONHash.new({foo: ['bar', 'baz', 'quux']}).to_s.should ==
+          %q{'{"foo":["bar","baz","quux"]}'}
+      end
+
       it 'converts back to a hash' do
         JSONHash.new({a: 1}).to_hash.should == { a: 1 }
       end
