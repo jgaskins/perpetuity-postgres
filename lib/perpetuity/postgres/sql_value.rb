@@ -3,6 +3,8 @@ require 'perpetuity/postgres/timestamp_value'
 require 'perpetuity/postgres/numeric_value'
 require 'perpetuity/postgres/null_value'
 require 'perpetuity/postgres/boolean_value'
+require 'perpetuity/postgres/json_hash'
+require 'perpetuity/postgres/json_array'
 
 module Perpetuity
   class Postgres
@@ -17,6 +19,10 @@ module Perpetuity
                    TimestampValue.new(value)
                  when Fixnum, Float
                    NumericValue.new(value)
+                 when Hash, JSONHash
+                   JSONHash.new(value.to_hash, :inner)
+                 when Array, JSONArray
+                   JSONArray.new(value.to_a, :inner)
                  when nil
                    NullValue.new
                  when true, false

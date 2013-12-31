@@ -29,6 +29,23 @@ module Perpetuity
         SQLValue.new(false).should == "FALSE"
       end
 
+      it 'converts hashes' do
+        SQLValue.new({ a: 1, b: 'foo'}).should == %q({"a":1,"b":"foo"})
+      end
+
+      it 'converts arrays' do
+        SQLValue.new([1, 'foo', { a: 1 }]).should == %q([1,"foo",{"a":1}])
+      end
+
+      it 'converts JSONHashes' do
+        SQLValue.new(JSONHash.new(a: 1)).should == %q({"a":1})
+      end
+
+      it 'converts JSONArrays' do
+        SQLValue.new(JSONArray.new([1, 'foo', [1, 'foo']])).should ==
+          %q([1,"foo",[1,"foo"]])
+      end
+
       it 'converts Time objects' do
         time = Time.new(2013, 1, 2, 3, 4, 5.1234567, '+05:30')
         SQLValue.new(time).should == "'2013-01-02 03:04:05.123456+0530'::timestamptz"
