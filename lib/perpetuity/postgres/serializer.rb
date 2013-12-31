@@ -109,6 +109,8 @@ module Perpetuity
           SQLValue.new(value)
         elsif value.is_a? Array
           serialize_array(object)
+        elsif value.is_a? Hash
+          serialize_hash(object)
         elsif !object.embedded?
           serialize_reference(value)
         elsif object.embedded?
@@ -129,6 +131,10 @@ module Perpetuity
         end
 
         JSONArray.new(array)
+      end
+
+      def serialize_hash object
+        JSONHash.new(object)
       end
 
       def serialize_to_hash value
