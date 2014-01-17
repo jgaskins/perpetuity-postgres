@@ -1,3 +1,5 @@
+require "bigdecimal"
+
 module Perpetuity
   class Postgres
     class Table
