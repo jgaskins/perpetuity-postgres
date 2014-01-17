@@ -21,7 +21,7 @@ Or install it yourself as:
 To configure Perpetuity to use your PostgreSQL database, you can use the same parameters as you would with the MongoDB adapter, except substitute `:postgres` in for `:mongodb`:
 
 ```ruby
-require 'perpetuity-postgres' # Unnecessary if using Rails
+require 'perpetuity/postgres' # Unnecessary if using Rails
 Perpetuity.data_source :postgres, 'my_perpetuity_database'
 ```
 
