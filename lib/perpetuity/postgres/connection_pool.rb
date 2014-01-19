@@ -17,10 +17,10 @@ module Perpetuity
       def lend_connection
         if block_given?
           connection = connections.pop
-          result = yield connection
-          connections << connection
-          result
+          yield connection
         end
+      ensure
+        connections << connection
       end
 
       def execute sql
