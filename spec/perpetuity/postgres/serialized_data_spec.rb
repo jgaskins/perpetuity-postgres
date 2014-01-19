@@ -46,6 +46,8 @@ module Perpetuity
 
       it 'checks whether there are any objects' do
         serialized.any?.should be_true
+        serialized.values.clear << []
+        serialized.any?.should be_false
       end
 
       it 'iterates like a hash' do

@@ -34,7 +34,7 @@ module Perpetuity
       end
 
       def any?
-        values.any?
+        values.flatten.any?
       end
 
       def each
