@@ -1,3 +1,8 @@
+## Version 0.0.3
+
+- Require the `bigdecimal` library to avoid undefined constant error: BigDecimals are converted to the Postgres `numeric` data type. In 1.9, it needs to be required explicitly. — [Avdi Grimm](https://github.com/avdi)
+- Properly return the connection to the connection pool if an exception is raised in the query.
+
 ## Version 0.0.2
 
 - Make DB creation call out to remote DB to create it instead of calling on localhost.
