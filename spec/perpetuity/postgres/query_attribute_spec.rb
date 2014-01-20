@@ -55,6 +55,14 @@ module Perpetuity
       it 'checks for truthiness' do
         attribute.to_db.should == 'attribute_name IS NOT NULL'
       end
+
+      describe 'nested attributes' do
+        it 'checks for an id' do
+          id = attribute.id
+          id.should be_a QueryAttribute
+          id.name.should == %q{attribute_name->'__metadata__'->>'id'}
+        end
+      end
     end
   end
 end

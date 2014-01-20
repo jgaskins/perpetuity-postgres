@@ -38,6 +38,10 @@ METHOD
         QueryExpression.new count, :==, 0
       end
 
+      def id
+        QueryAttribute.new "#{name}->'__metadata__'->>'id'"
+      end
+
       def to_s
         name.to_s
       end
