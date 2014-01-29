@@ -30,6 +30,10 @@ module Perpetuity
           serialized.should_not be_embedded
         end
       end
+
+      it 'passes messages to the value' do
+        serialized.upcase.should == 'FOO'
+      end
     end
   end
 end

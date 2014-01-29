@@ -14,6 +14,10 @@ module Perpetuity
       def embedded?
         attribute.embedded?
       end
+
+      def method_missing *args, &block
+        value.send(*args, &block)
+      end
     end
   end
 end
