@@ -1,4 +1,5 @@
 require 'perpetuity/postgres/value_with_attribute'
+require 'ostruct'
 
 module Perpetuity
   class Postgres
