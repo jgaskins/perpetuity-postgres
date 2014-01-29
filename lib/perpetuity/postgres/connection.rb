@@ -19,6 +19,8 @@ module Perpetuity
 
       def connect
         @pg_connection = PG.connect(options)
+        @pg_connection.exec 'SET client_min_messages TO warning'
+        @pg_connection
       rescue PG::ConnectionBad => e
         tries ||= 0
         connect_options = options.dup
