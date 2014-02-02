@@ -1,3 +1,8 @@
+## Version 0.0.4
+
+- Set minimum logging from the database to warnings. This silences info messages like those from `DROP TABLE IF NOT EXISTS ...` when the table doesn't exist.
+- Add the ability to query on ids for objects. For example: `mapper.select { |article| article.author.id == params[:author_id] }`
+
 ## Version 0.0.3
 
 - Require the `bigdecimal` library to avoid undefined constant error: BigDecimals are converted to the Postgres `numeric` data type. In 1.9, it needs to be required explicitly. — [Avdi Grimm](https://github.com/avdi)
