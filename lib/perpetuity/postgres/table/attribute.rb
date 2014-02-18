@@ -19,11 +19,7 @@ module Perpetuity
 
         def sql_type
           if type == String
-            if max_length
-              "VARCHAR(#{max_length})"
-            else
-              'TEXT'
-            end
+            'TEXT'
           elsif type == Integer or type == Fixnum
             'BIGINT'
           elsif type == Bignum or type == BigDecimal

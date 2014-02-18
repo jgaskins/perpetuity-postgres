@@ -5,7 +5,7 @@ module Perpetuity
   class Postgres
     class Table
       describe Attribute do
-        let(:title)  { Attribute.new('title', String, max_length: 40) }
+        let(:title)  { Attribute.new('title', String) }
 
         it 'knows its name' do
           title.name.should == 'title'
@@ -44,7 +44,6 @@ module Perpetuity
           let(:body) { Attribute.new('body', String, default: 'foo') }
 
           it 'converts to the proper SQL type' do
-            title.sql_type.should == 'VARCHAR(40)'
             body.sql_type.should == 'TEXT'
           end
 
