@@ -9,6 +9,18 @@ module Perpetuity
         NoDefaultValue = Module.new
         UUID = Module.new
 
+        SQL_TYPE_MAP = {
+          String => 'TEXT',
+          Integer => 'BIGINT',
+          Fixnum =>  'BIGINT',
+          Bignum =>     'NUMERIC',
+          BigDecimal => 'NUMERIC',
+
+          Float => 'FLOAT',
+          UUID => 'UUID',
+          Time => 'TIMESTAMPTZ'
+        }.tap{|m| m.default = 'JSON' }
+
         def initialize name, type, options={}
           @name = name
           @type = type
@@ -18,22 +30,7 @@ module Perpetuity
         end
 
         def sql_type
-          case type
-          when String
-            'TEXT'
-          when Integer, Fixnum
-            'BIGINT'
-          when Bignum, BigDecimal
-            'NUMERIC'
-          when Float
-            'FLOAT'
-          when UUID
-            'UUID'
-          when Time
-            'TIMESTAMPTZ'
-          else
-            'JSON'
-          end
+          SQL_TYPE_MAP[type]
         end
 
         def sql_declaration
