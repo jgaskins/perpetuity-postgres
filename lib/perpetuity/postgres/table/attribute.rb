@@ -18,21 +18,18 @@ module Perpetuity
         end
 
         def sql_type
-          if type == String
-            if max_length
-              "VARCHAR(#{max_length})"
-            else
-              'TEXT'
-            end
-          elsif type == Integer or type == Fixnum
+          case type
+          when String
+            'TEXT'
+          when Integer, Fixnum
             'BIGINT'
-          elsif type == Bignum or type == BigDecimal
+          when Bignum, BigDecimal
             'NUMERIC'
-          elsif type == Float
+          when Float
             'FLOAT'
-          elsif type == UUID
+          when UUID
             'UUID'
-          elsif type == Time
+          when Time
             'TIMESTAMPTZ'
           else
             'JSON'
