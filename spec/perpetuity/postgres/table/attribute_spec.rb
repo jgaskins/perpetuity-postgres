@@ -44,7 +44,7 @@ module Perpetuity
           let(:body) { Attribute.new('body', String, default: 'foo') }
 
           it 'converts to the proper SQL type' do
-            title.sql_type.should == 'VARCHAR(40)'
+            title.sql_type.should == 'TEXT'
             body.sql_type.should == 'TEXT'
           end
 
