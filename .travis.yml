@@ -1,0 +1,13 @@
+language: ruby
+rvm:
+  - 1.9.3
+  - rbx
+  - 2.0.0
+  - 2.1.1
+matrix:
+  allow_failures:
+    - rvm: rbx
+services:
+  - postgres
+before_script:
+  - psql -c 'create database perpetuity_gem_test;' -U postgres
