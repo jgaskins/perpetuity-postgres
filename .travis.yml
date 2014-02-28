@@ -7,7 +7,7 @@ rvm:
 matrix:
   allow_failures:
     - rvm: rbx
-services:
-  - postgres
+addons:
+  postgresql: 9.3
 before_script:
   - psql -c 'create database perpetuity_gem_test;' -U postgres
