@@ -141,12 +141,6 @@ module Perpetuity
         postgres.retrieve('Article', 'TRUE').should == []
       end
 
-      it 'deletes all records' do
-        postgres.insert 'User', data, attributes
-        postgres.delete_all 'User'
-        postgres.count('User').should == 0
-      end
-
       it 'updates a specific record' do
         id = postgres.insert('User', data, attributes).first
         postgres.update 'User', id, name: 'foo'
@@ -155,9 +149,22 @@ module Perpetuity
         retrieved.first['name'].should == 'foo'
       end
 
-      it 'deletes a record with a specific id' do
-        id = postgres.insert('User', data, attributes).first
-        expect { postgres.delete id, 'User' }.to change { postgres.count 'User' }.by -1
+      describe 'deletion' do
+        it 'deletes all records' do
+          postgres.insert 'User', data, attributes
+          postgres.delete_all 'User'
+          postgres.count('User').should == 0
+        end
+
+        it 'deletes a record with a specific id' do
+          id = postgres.insert('User', data, attributes).first
+          expect { postgres.delete id, 'User' }.to change { postgres.count 'User' }.by -1
+        end
+
+        it 'deletes records with specific ids' do
+          ids = Array.new(3) { postgres.insert('User', data, attributes).first }
+          expect { postgres.delete ids.take(2), 'User' }.to change { postgres.count 'User' }.by -2
+        end
       end
 
       describe 'incrementing/decrementing' do

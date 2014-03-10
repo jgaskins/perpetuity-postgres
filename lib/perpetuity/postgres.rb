@@ -70,11 +70,23 @@ module Perpetuity
       raise
     end
 
-    def delete id, klass
+    def delete ids, klass
+      ids = Array(ids)
       table = TableName.new(klass)
-      id_string = TextValue.new(id)
-      sql = "DELETE FROM #{table} WHERE id = #{id_string}"
-      connection.execute(sql).to_a
+
+      if ids.one?
+        id_string = TextValue.new(ids.first)
+        sql = "DELETE FROM #{table} WHERE id = #{id_string}"
+
+        connection.execute(sql).to_a
+      elsif ids.none?
+        # Do nothing, we weren't given anything to delete
+      else
+        id_string = Array(ids).map { |id| TextValue.new(id) }
+        sql = "DELETE FROM #{table} WHERE id IN (#{id_string.join(',')})"
+
+        connection.execute(sql).to_a
+      end
     end
 
     def count klass, query='TRUE', options={}, &block
