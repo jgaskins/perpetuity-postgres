@@ -82,7 +82,7 @@ module Perpetuity
       elsif ids.none?
         # Do nothing, we weren't given anything to delete
       else
-        id_string = Array(ids).map { |id| TextValue.new(id) }
+        id_string = ids.map { |id| TextValue.new(id) }
         sql = "DELETE FROM #{table} WHERE id IN (#{id_string.join(',')})"
 
         connection.execute(sql).to_a
