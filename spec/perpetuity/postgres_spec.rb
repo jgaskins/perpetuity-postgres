@@ -149,6 +149,14 @@ module Perpetuity
         retrieved.first['name'].should == 'foo'
       end
 
+      it 'updates a record when a column does not currently exist' do
+        id = postgres.insert('User', data, attributes).first
+        postgres.update 'User', id, Postgres::SerializedData.new(['foo'], ["'bar'"])
+
+        retrieved = postgres.retrieve('User', "id = '#{id}'")
+        retrieved.first['foo'].should == 'bar'
+      end
+
       describe 'deletion' do
         it 'deletes all records' do
           postgres.insert 'User', data, attributes

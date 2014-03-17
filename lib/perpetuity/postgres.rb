@@ -140,6 +140,15 @@ module Perpetuity
     def update klass, id, attributes
       sql = SQLUpdate.new(klass, id, attributes).to_s
       connection.execute(sql).to_a
+    rescue PG::UndefinedColumn => e
+      if e.message =~ /column "(.*)" of relation "(.*)" does not exist/
+        column_name = $1
+        table_name = $2
+        add_column table_name, column_name, [Attribute.new(column_name, attributes[column_name].class)]
+        retry
+      else
+        raise e
+      end
     end
 
     def index klass, attributes, options={}
