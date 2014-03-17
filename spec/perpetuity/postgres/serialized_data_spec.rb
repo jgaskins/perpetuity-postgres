@@ -55,6 +55,11 @@ module Perpetuity
           [['name', "'Jamie'"], ['age', 31]]
       end
 
+      it 'accesses values like a hash' do
+        serialized['age'].should == 31
+        serialized[:age].should == 31
+      end
+
       it 'equals another with the same data' do
         original = SerializedData.new([:a, :b], [1, 2])
         duplicate = SerializedData.new([:a, :b], [1, 2])

@@ -15,6 +15,11 @@ module Perpetuity
         "(#{column_names.join(',')}) VALUES #{value_strings}"
       end
 
+      def [] key
+        index = column_names.index(key.to_s)
+        values.first[index]
+      end
+
       def []= column, value
         value = TextValue.new(value)
         if column_names.include? column
