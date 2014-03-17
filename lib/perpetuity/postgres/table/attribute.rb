@@ -17,7 +17,9 @@ module Perpetuity
           BigDecimal => 'NUMERIC',
           Float => 'FLOAT',
           UUID => 'UUID',
-          Time => 'TIMESTAMPTZ'
+          Time => 'TIMESTAMPTZ',
+          TrueClass => 'BOOLEAN',
+          FalseClass => 'BOOLEAN'
         }.tap{|m| m.default = 'JSON' }
 
         def initialize name, type, options={}

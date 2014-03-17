@@ -80,6 +80,13 @@ module Perpetuity
           end
         end
 
+        describe 'booleans' do
+          it 'is stored in a BOOLEAN column' do
+            Attribute.new(:true,  TrueClass).sql_type.should == 'BOOLEAN'
+            Attribute.new(:false, FalseClass).sql_type.should == 'BOOLEAN'
+          end
+        end
+
         describe 'non-serializable types' do
           let(:author) { Attribute.new('author', Object) }
 

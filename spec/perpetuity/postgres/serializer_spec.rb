@@ -125,12 +125,13 @@ module Perpetuity
 
         let(:article_class) do
           Class.new do
-            attr_reader :title, :body, :views, :published_at
+            attr_reader :title, :body, :views, :published_at, :published
             def initialize attributes={}
               @title = attributes[:title]
               @body = attributes[:body]
               @views = attributes.fetch(:views) { 0 }
               @published_at = attributes.fetch(:published_at) { Time.now }
+              @published = attributes.fetch(:published) { false }
             end
 
             def == other
@@ -138,7 +139,8 @@ module Perpetuity
               other.title == title &&
               other.body == body &&
               other.views == views &&
-              other.published_at == published_at
+              other.published_at == published_at &&
+              other.published == published
             end
           end
         end
@@ -151,6 +153,7 @@ module Perpetuity
             attribute :body, type: String
             attribute :views, type: Integer
             attribute :published_at, type: Time
+            attribute :published, type: TrueClass
           end.new(registry)
         end
 
@@ -161,14 +164,16 @@ module Perpetuity
             'title' => 'Title',
             'body' => 'Body',
             'views' => '0',
-            'published_at' => '2013-01-02 03:04:05.123456-05'
+            'published_at' => '2013-01-02 03:04:05.123456-05',
+            'published' => true
           }
 
           article = article_class.new(
             title: 'Title',
             body: 'Body',
             views: 0,
-            published_at: Time.new(2013, 1, 2, 3, 4, 5.123456, '-05:00')
+            published_at: Time.new(2013, 1, 2, 3, 4, 5.123456, '-05:00'),
+            published: true
           )
           serializer.unserialize(serialized_article).should == article
         end
