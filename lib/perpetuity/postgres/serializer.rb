@@ -63,6 +63,8 @@ module Perpetuity
               value = value.to_i
             elsif attribute.type == Time
               value = TimestampValue.from_sql(value).to_time
+            elsif [TrueClass, FalseClass].include? attribute.type
+              value = value.downcase.start_with? 't'
             end
           end
 

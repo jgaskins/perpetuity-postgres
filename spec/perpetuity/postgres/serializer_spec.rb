@@ -165,7 +165,7 @@ module Perpetuity
             'body' => 'Body',
             'views' => '0',
             'published_at' => '2013-01-02 03:04:05.123456-05',
-            'published' => true
+            'published' => 't'
           }
 
           article = article_class.new(
