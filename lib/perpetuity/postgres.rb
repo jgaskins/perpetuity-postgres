@@ -152,7 +152,7 @@ module Perpetuity
     end
 
     def index klass, attributes, options={}
-      name = "#{klass}_#{Array(attributes).map(&:name).join('_')}_idx"
+      name = "#{klass}_#{Array(attributes).map(&:name).join('_')}_index"
       index = Index.new(name: name,
                         attributes: Array(attributes),
                         unique: !!options[:unique],
@@ -169,9 +169,12 @@ module Perpetuity
     def activate_index! index
       return if index.active?
 
+      attribute_names = index.attribute_names.join('_')
+      index_name = "#{index.table}_#{attribute_names}_index"
       sql = "CREATE "
       sql << "UNIQUE " if index.unique?
-      sql << "INDEX ON #{TableName.new(index.table)} (#{index.attribute_names.join(',')})"
+      sql << "INDEX \"#{index_name}\" "
+      sql << "ON #{TableName.new(index.table)} (#{attribute_names})"
       connection.execute(sql)
       index.activate!
     rescue PG::UndefinedTable => e
@@ -191,7 +194,7 @@ module Perpetuity
              pg_index.indisready AS active
       FROM pg_class
       INNER JOIN pg_index ON pg_class.oid = pg_index.indexrelid
-      WHERE pg_class.relname ~ '^#{table}.*idx$'
+      WHERE pg_class.relname ~ '^#{table}.*index$'
       SQL
 
       indexes = connection.execute(sql).map do |index|

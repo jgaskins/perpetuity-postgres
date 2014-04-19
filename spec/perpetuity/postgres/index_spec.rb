@@ -5,7 +5,7 @@ module Perpetuity
     describe Index do
       it 'can be generated from SQL results' do
         index_hash = {
-          "name"=>"Object_id_name_idx",
+          "name"=>"Object_id_name_index",
           "attributes"=>"{id,name}",
           "unique"=>"t",
           "active"=>"t"
@@ -13,7 +13,7 @@ module Perpetuity
 
         index = Index.from_sql(index_hash)
         index.attribute_names.should == ['id', 'name']
-        index.name.should == 'Object_id_name_idx'
+        index.name.should == 'Object_id_name_index'
         index.table.should == 'Object'
         index.should be_unique
         index.should be_active

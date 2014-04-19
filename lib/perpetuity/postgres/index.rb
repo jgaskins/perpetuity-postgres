@@ -49,7 +49,7 @@ module Perpetuity
       end
 
       def table
-        name.gsub("_#{attributes.map(&:to_s).join('_')}_idx", '')
+        name.gsub("_#{attributes.map(&:to_s).join('_')}_index", '')
       end
 
       def == other
