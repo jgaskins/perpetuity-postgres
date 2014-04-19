@@ -62,6 +62,10 @@ module Perpetuity
       def eql? other
         self == other
       end
+
+      def hash
+        name.to_s.hash
+      end
     end
   end
 end

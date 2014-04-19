@@ -163,10 +163,12 @@ module Perpetuity
 
     def indexes klass
       @indexes ||= {}
-      @indexes[klass] ||= IndexCollection.new(klass)
+      @indexes[klass] ||= active_indexes(klass)
     end
 
     def activate_index! index
+      return if index.active?
+
       sql = "CREATE "
       sql << "UNIQUE " if index.unique?
       sql << "INDEX ON #{TableName.new(index.table)} (#{index.attribute_names.join(',')})"
