@@ -47,7 +47,7 @@ module Perpetuity
         it 'is not equal to an index with different attributes' do
           new_index = Index.new(attributes: [:lol],
                                 name: name,
-                                unique: false)
+                                unique: unique)
 
           new_index.should_not == index
         end
