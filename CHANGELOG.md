@@ -1,3 +1,12 @@
+## Version 0.0.5
+
+- Name indexes explicitly based on table and attributes. Previously we were counting on the PostgreSQL naming convention, but that could break in future versions of Postgres.
+- Fixed a bug that was causing duplicate indexes to be built
+- Deserialize booleans. They should be declared in the mapper as `TrueClass` or `FalseClass`.
+- Fixed a bug that choked when you tried to save an attribute for an object  if that column was not yet added.
+- Allow deleting an array of objects
+- Removed VARCHAR conversion. VARCHAR and TEXT are stored exactly the same in PostgreSQL. There's no reason to limit yourself to a VARCHAR unless you're using table constraints, which are far more flexible.
+
 ## Version 0.0.4
 
 - Set minimum logging from the database to warnings. This silences info messages like those from `DROP TABLE IF NOT EXISTS ...` when the table doesn't exist.
