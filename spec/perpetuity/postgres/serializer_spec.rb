@@ -139,7 +139,7 @@ module Perpetuity
               other.title == title &&
               other.body == body &&
               other.views == views &&
-              other.published_at == published_at &&
+              other.published_at - published_at < 0.0000001 &&
               other.published == published
             end
           end

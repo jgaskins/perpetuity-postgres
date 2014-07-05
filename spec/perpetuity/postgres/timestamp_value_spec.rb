@@ -10,13 +10,15 @@ module Perpetuity
 
       describe 'conversion from a SQL value string' do
         it 'converts GMT-X times' do
-          timestamp = TimestampValue.from_sql('2013-12-01 15:31:23.838367-05')
-          timestamp.to_time.should == Time.new(2013, 12, 1, 15, 31, 23.838367, '-05:00')
+          actual = TimestampValue.from_sql('2013-12-01 15:31:23.838367-05')
+          expected = Time.new(2013, 12, 1, 15, 31, 23.838367, '-05:00')
+          actual.to_time.should be_within(0.0000001).of expected
         end
 
         it 'converts GMT+X times' do
-          timestamp = TimestampValue.from_sql('1982-08-25 22:19:10.123456+08')
-          timestamp.to_time.should == Time.new(1982, 8, 25, 10, 19, 10.123456, '-04:00')
+          actual = TimestampValue.from_sql('1982-08-25 22:19:10.123456+08')
+          expected = Time.new(1982, 8, 25, 10, 19, 10.123456, '-04:00')
+          actual.to_time.should be_within(0.0000001).of expected
         end
       end
 

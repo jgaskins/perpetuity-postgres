@@ -9,13 +9,7 @@ module Perpetuity
       end
 
       def self.from_sql sql_value
-        date, time = sql_value.split(/ /)
-        year, month, day = date.split(/-/)
-        hour, minute, seconds_with_offset = time.split(/:/)
-        second = seconds_with_offset[/\d+\.\d+/].to_f
-        offset = seconds_with_offset[/(\+|\-)\d+/] + ':00'
-
-        new Time.new(year, month, day, hour, minute, second, offset)
+        Time.parse(sql_value)
       end
 
       def to_time
