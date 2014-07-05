@@ -4,6 +4,7 @@ require 'perpetuity/postgres/value_with_attribute'
 require 'perpetuity/postgres/json_array'
 require 'perpetuity/postgres/json_hash'
 require 'perpetuity/data_injectable'
+require 'set'
 require 'json'
 
 module Perpetuity
@@ -11,7 +12,7 @@ module Perpetuity
     class Serializer
       include DataInjectable
 
-      SERIALIZABLE_CLASSES = [Fixnum, Float, String, Time, TrueClass, FalseClass, NilClass]
+      SERIALIZABLE_CLASSES = Set[Fixnum, Float, String, Time, TrueClass, FalseClass, NilClass]
       attr_reader :mapper, :mapper_registry
 
       def initialize mapper
