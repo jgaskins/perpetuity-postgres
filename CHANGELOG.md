@@ -1,3 +1,7 @@
+## Version 0.0.6
+
+- Depend on [perpetuity](https://github.com/jgaskins/perpetuity) 1.0 final
+
 ## Version 0.0.5
 
 - Name indexes explicitly based on table and attributes. Previously we were counting on the PostgreSQL naming convention, but that could break in future versions of Postgres.
