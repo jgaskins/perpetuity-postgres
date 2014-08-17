@@ -29,6 +29,14 @@ module Perpetuity
           'CREATE TABLE IF NOT EXISTS "Article" (id UUID PRIMARY KEY DEFAULT uuid_generate_v4(), title TEXT, body TEXT, author JSON, published_at TIMESTAMPTZ, views BIGINT)'
       end
 
+      it 'sets the id as PRIMARY KEY even if specified in attributes' do
+        attributes = self.attributes.dup
+        attributes.unshift Table::Attribute.new(:id, String)
+        table = Table.new('Article', attributes)
+        table.create_table_sql.should ==
+          'CREATE TABLE IF NOT EXISTS "Article" (id TEXT PRIMARY KEY, title TEXT, body TEXT, author JSON, published_at TIMESTAMPTZ, views BIGINT)'
+      end
+
       describe 'id column' do
         context 'when there is an id attribute' do
           it 'uses the attribute type for the column type' do

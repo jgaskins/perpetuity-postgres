@@ -26,7 +26,11 @@ module Perpetuity
           @name = name
           @type = type
           @max_length = options[:max_length]
-          @primary_key = options.fetch(:primary_key) { false }
+          @primary_key = if @name.to_s == 'id'
+                           true
+                         else
+                           options.fetch(:primary_key) { false }
+                         end
           @default = options.fetch(:default) { NoDefaultValue }
         end
 
