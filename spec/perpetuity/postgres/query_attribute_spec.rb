@@ -4,9 +4,10 @@ module Perpetuity
   class Postgres
     describe QueryAttribute do
       let(:attribute) { QueryAttribute.new :attribute_name }
-      subject { attribute }
 
-      its(:name) { should == :attribute_name }
+      it 'returns its name' do
+        attribute.name.should == :attribute_name
+      end
 
       it 'checks for equality' do
         (attribute == 1).should be_a QueryExpression

@@ -25,25 +25,36 @@ module Perpetuity
             password:  password
           )
         end
-        subject { postgres }
 
-        its(:host)      { should == host }
-        its(:port)      { should == port }
-        its(:db)        { should == db }
-        its(:pool_size) { should == pool_size }
-        its(:username)  { should == username }
-        its(:password)  { should == password }
+        [:host, :port, :db, :pool_size, :username, :password].each do |attribute|
+          it "returns its #{attribute}" do
+            postgres.public_send(attribute).should == send(attribute)
+          end
+        end
       end
 
       context 'default values' do
         let(:postgres) { Postgres.new(db: 'my_db') }
-        subject { postgres }
 
-        its(:host)      { should == 'localhost' }
-        its(:port)      { should == 5432 }
-        its(:pool_size) { should == 5 }
-        its(:username)  { should == ENV['USER'] }
-        its(:password)  { should be_nil }
+        it 'defaults to host = localhost' do
+          postgres.host.should == 'localhost'
+        end
+
+        it 'defaults to port = 5432 (Postgres default)' do
+          postgres.port.should == 5432
+        end
+
+        it "defaults to username = #{ENV['USER']}" do
+          postgres.username.should == ENV['USER']
+        end
+
+        it 'defaults to a blank password' do
+          postgres.password.should be nil
+        end
+
+        it 'defaults to pool_size = 5' do
+          postgres.pool_size.should == 5
+        end
       end
     end
 
@@ -108,7 +119,7 @@ module Perpetuity
           Postgres::SerializedData.new([:name], ["'Kevin'"])
           ids = postgres.insert('User', data, attributes)
           ids.should be_a Array
-          ids.should have(3).items
+          expect(ids.count).to eq 3
         end
 
         it 'returns numeric ids when numeric ids are specified' do
@@ -128,7 +139,7 @@ module Perpetuity
       it 'counts objects with a string query' do
         insert = proc { postgres.insert 'User', data, attributes }
         expect(&insert).to     change { postgres.count('User', "name = 'Jamie'") }.by 1
-        expect(&insert).not_to change { postgres.count('User', "name = 'Jessica'") }.by 1
+        expect(&insert).not_to change { postgres.count('User', "name = 'Jessica'") }
       end
 
       it 'returns a count of 0 when the table does not exist' do

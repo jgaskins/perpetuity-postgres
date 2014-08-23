@@ -8,9 +8,17 @@ module Perpetuity
                                   limit: 4) }
       subject { query }
 
-      its(:table) { should == 'foo' }
-      its(:where) { should == "name = 'foo'" }
-      its(:limit) { should == 4 }
+      it 'returns its table name' do
+        query.table.should == 'foo'
+      end
+
+      it 'returns its WHERE clause' do
+        query.where.should == "name = 'foo'"
+      end
+
+      it 'returns its limit' do
+        query.limit.should == 4
+      end
 
       it 'generates a SQL query' do
         query.to_s.should == %Q{SELECT * FROM "foo" WHERE name = 'foo' LIMIT 4}

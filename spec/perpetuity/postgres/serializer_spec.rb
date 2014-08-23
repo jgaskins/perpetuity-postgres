@@ -181,25 +181,25 @@ module Perpetuity
 
       describe 'identifying embedded/referenced objects as foreign' do
         it 'sees hashes with metadata keys as foreign objects' do
-          serializer.foreign_object?({'__metadata__' => 'lol'}).should be_true
+          serializer.foreign_object?({'__metadata__' => 'lol'}).should be_truthy
         end
 
         it 'sees hashes without metadata keys as simple hashes' do
-          serializer.foreign_object?({ 'name' => 'foo' }).should be_false
+          serializer.foreign_object?({ 'name' => 'foo' }).should be_falsey
         end
       end
 
       describe 'identifying possible JSON strings' do
         it 'identifies JSON objects' do
-          serializer.possible_json_value?('{"name":"foo"}').should be_true
+          serializer.possible_json_value?('{"name":"foo"}').should be_truthy
         end
 
         it 'identifies JSON arrays' do
-          serializer.possible_json_value?('[{"name":"foo"}]').should be_true
+          serializer.possible_json_value?('[{"name":"foo"}]').should be_truthy
         end
 
         it 'rejects things it does not detect as either of the above' do
-          serializer.possible_json_value?('foo is my name').should be_false
+          serializer.possible_json_value?('foo is my name').should be_falsey
         end
       end
 

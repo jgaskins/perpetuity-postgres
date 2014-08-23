@@ -6,7 +6,7 @@ module Perpetuity
       let(:pool) { ConnectionPool.new }
 
       it 'defaults to 5 connections' do
-        pool.should have(5).connections
+        expect(pool.connections.size).to eq 5
       end
 
       describe 'lending a connection' do
@@ -20,9 +20,9 @@ module Perpetuity
 
         it 'lends a connection for the duration of a block' do
           pool.lend_connection do |connection|
-            pool.should have(4).connections
+            expect(pool.connections.size).to eq 4
           end
-          pool.should have(5).connections
+          expect(pool.connections.size).to eq 5
         end
 
         it 'returns the value of the block' do
@@ -48,7 +48,7 @@ module Perpetuity
           pool.lend_connection { |c| connections << c }
         end
 
-        connections.uniq.should have(pool.size).items
+        expect(connections.uniq.size).to eq pool.size
       end
     end
   end
