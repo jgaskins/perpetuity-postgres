@@ -80,6 +80,14 @@ module Perpetuity
           end
         end
 
+        describe 'dates' do
+          let(:date) { Attribute.new('anniversary_date', Date) }
+
+          it 'converts to the SQL DATE type' do
+            date.sql_type.should == 'DATE'
+          end
+        end
+
         describe 'booleans' do
           it 'is stored in a BOOLEAN column' do
             Attribute.new(:true,  TrueClass).sql_type.should == 'BOOLEAN'

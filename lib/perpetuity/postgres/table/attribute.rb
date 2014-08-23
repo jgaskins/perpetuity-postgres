@@ -18,6 +18,7 @@ module Perpetuity
           Float => 'FLOAT',
           UUID => 'UUID',
           Time => 'TIMESTAMPTZ',
+          Date => 'DATE',
           TrueClass => 'BOOLEAN',
           FalseClass => 'BOOLEAN'
         }.tap{|m| m.default = 'JSON' }

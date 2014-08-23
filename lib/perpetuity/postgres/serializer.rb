@@ -12,7 +12,7 @@ module Perpetuity
     class Serializer
       include DataInjectable
 
-      SERIALIZABLE_CLASSES = Set[Fixnum, Float, String, Time, TrueClass, FalseClass, NilClass]
+      SERIALIZABLE_CLASSES = Set[Fixnum, Float, String, Time, Date, TrueClass, FalseClass, NilClass]
       attr_reader :mapper, :mapper_registry
 
       def initialize mapper

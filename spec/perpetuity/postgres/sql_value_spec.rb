@@ -50,6 +50,11 @@ module Perpetuity
         time = Time.new(2013, 1, 2, 3, 4, 5.1234567, '+05:30')
         SQLValue.new(time).should == "'2013-01-02 03:04:05.123456+0530'::timestamptz"
       end
+
+      it 'converts Date objects' do
+        date = Date.new(2014, 8, 25)
+        SQLValue.new(date).should == "'2014-08-25'::date"
+      end
     end
   end
 end

@@ -1,5 +1,6 @@
 require 'perpetuity/postgres/text_value'
 require 'perpetuity/postgres/timestamp_value'
+require 'perpetuity/postgres/date_value'
 require 'perpetuity/postgres/numeric_value'
 require 'perpetuity/postgres/null_value'
 require 'perpetuity/postgres/boolean_value'
@@ -17,6 +18,8 @@ module Perpetuity
                    TextValue.new(value)
                  when Time
                    TimestampValue.new(value)
+                 when Date
+                   DateValue.new(value)
                  when Fixnum, Float
                    NumericValue.new(value)
                  when Hash, JSONHash

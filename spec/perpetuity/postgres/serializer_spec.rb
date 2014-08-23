@@ -81,6 +81,11 @@ module Perpetuity
           serializer.serialize_attribute(time).should == "'2000-01-02 03:04:05.123456-0400'::timestamptz"
         end
 
+        it 'serializes Date objects' do
+          date = Date.new(2014, 8, 25)
+          serializer.serialize_attribute(date).should == "'2014-08-25'::date"
+        end
+
         it 'serializes an array as JSON' do
           serializer.serialize_attribute([1, 'foo']).should == %q{'[1,"foo"]'}
         end
