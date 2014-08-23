@@ -1,3 +1,8 @@
+## Version 0.0.7
+
+- Allow for querying within a range: `mapper.select { |o| o.value.in (1..3) }`
+- Serialize Ruby `Date` objects
+
 ## Version 0.0.6
 
 - Depend on [perpetuity](https://github.com/jgaskins/perpetuity) 1.0 final
