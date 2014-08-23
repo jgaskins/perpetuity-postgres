@@ -66,7 +66,12 @@ module Perpetuity
       end
 
       def in
-        "#{attribute} IN #{sql_value}"
+        case sql_value
+        when Range
+          "#{attribute} BETWEEN #{SQLValue.new(sql_value.min)} AND #{SQLValue.new(sql_value.max)}"
+        else
+          "#{attribute} IN #{sql_value}"
+        end
       end
 
       def =~

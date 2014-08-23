@@ -57,6 +57,12 @@ module Perpetuity
           expression.to_db.should == "attribute IN (1,2,3)"
         end
 
+        it 'checks for inclusion in a range' do
+          expression.comparator = :in
+          expression.value = (1..3)
+          expression.to_db.should == "attribute BETWEEN 1 AND 3"
+        end
+
         it 'checks for inclusion of strings' do
           expression.comparator = :in
           expression.value = ['abc', '123']
