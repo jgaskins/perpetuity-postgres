@@ -12,11 +12,11 @@ module Perpetuity
         }
 
         index = Index.from_sql(index_hash)
-        index.attribute_names.should == ['id', 'name']
-        index.name.should == 'Object_id_name_index'
-        index.table.should == 'Object'
-        index.should be_unique
-        index.should be_active
+        expect(index.attribute_names).to be == ['id', 'name']
+        expect(index.name).to be == 'Object_id_name_index'
+        expect(index.table).to be == 'Object'
+        expect(index).to be_unique
+        expect(index).to be_active
       end
 
       it 'sets itself as active' do
@@ -24,9 +24,9 @@ module Perpetuity
                           name: 'Table',
                           unique: false)
 
-        index.should_not be_active
+        expect(index).not_to be_active
         index.activate!
-        index.should be_active
+        expect(index).to be_active
       end
 
       describe 'equality' do
@@ -41,7 +41,7 @@ module Perpetuity
 
         it 'is equal to an index with identical state' do
           new_index = index.dup
-          new_index.should == index
+          expect(new_index).to be == index
         end
 
         it 'is not equal to an index with different attributes' do
@@ -49,14 +49,14 @@ module Perpetuity
                                 name: name,
                                 unique: unique)
 
-          new_index.should_not == index
+          expect(new_index).not_to be == index
         end
 
         it 'is equal to an index with stringified attributes' do
           new_index = Index.new(attributes: attributes.map(&:to_s),
                                 name: name,
                                 unique: unique)
-          new_index.should == index
+          expect(new_index).to be == index
         end
 
         it 'is not equal to an index with another name' do
@@ -64,18 +64,18 @@ module Perpetuity
                                 name: 'NotObject',
                                 unique: unique)
 
-          new_index.should_not == index
+          expect(new_index).not_to be == index
         end
 
         it 'is not equal to an index with opposite uniqueness' do
           new_index = Index.new(attributes: attributes,
                                 name: name,
                                 unique: !unique)
-          new_index.should_not == index
+          expect(new_index).not_to be == index
         end
 
         it 'is not equal to things that are not indexes' do
-          index.should_not == 'lol'
+          expect(index).not_to be == 'lol'
         end
       end
     end

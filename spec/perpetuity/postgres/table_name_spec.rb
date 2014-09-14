@@ -4,7 +4,7 @@ module Perpetuity
   class Postgres
     describe TableName do
       it 'converts to a SQL-string table name' do
-        TableName.new('Person').to_s.should == '"Person"'
+        expect(TableName.new('Person').to_s).to be == '"Person"'
       end
 
       it 'cannot contain double quotes' do
@@ -12,7 +12,7 @@ module Perpetuity
       end
 
       it 'compares equally to its string representation' do
-        TableName.new('Person').should == 'Person'
+        expect(TableName.new('Person')).to be == 'Person'
       end
     end
   end

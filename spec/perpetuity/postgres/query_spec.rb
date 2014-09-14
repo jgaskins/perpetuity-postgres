@@ -6,17 +6,17 @@ module Perpetuity
       let(:query) { Query.new { |o| o.name == 'foo' } }
 
       it 'generates an equality statement' do
-        query.to_db.should == "name = 'foo'"
+        expect(query.to_db).to be == "name = 'foo'"
       end
 
       it 'automatically converts to a string' do
         q = ''
         q << query
-        q.should == "name = 'foo'"
+        expect(q).to be == "name = 'foo'"
       end
 
       it 'returns TRUE with no block passed' do
-        Query.new.to_db.should == 'TRUE'
+        expect(Query.new.to_db).to be == 'TRUE'
       end
     end
   end

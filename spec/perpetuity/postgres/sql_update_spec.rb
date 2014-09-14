@@ -7,14 +7,14 @@ module Perpetuity
       context 'when given a SerializedData' do
         it 'generates the SQL to update an object' do
           update = SQLUpdate.new('User', 'abc123', SerializedData.new([:foo, :baz], ["'bar'", "'quux'"]))
-          update.to_s.should == %Q{UPDATE "User" SET foo = 'bar',baz = 'quux' WHERE id = 'abc123'}
+          expect(update.to_s).to be == %Q{UPDATE "User" SET foo = 'bar',baz = 'quux' WHERE id = 'abc123'}
         end
       end
 
       context 'when given a hash' do
         it 'sanitizes the data into SQLValues' do
           update = SQLUpdate.new('User', 'abc123', foo: 'bar', baz: 'quux')
-          update.to_s.should == %Q{UPDATE "User" SET foo = 'bar',baz = 'quux' WHERE id = 'abc123'}
+          expect(update.to_s).to be == %Q{UPDATE "User" SET foo = 'bar',baz = 'quux' WHERE id = 'abc123'}
         end
       end
     end

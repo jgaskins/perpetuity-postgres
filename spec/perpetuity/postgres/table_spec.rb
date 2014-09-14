@@ -13,19 +13,19 @@ module Perpetuity
       let(:table) { Table.new('Article', attributes) }
 
       it 'knows its name' do
-        table.name.should == 'Article'
+        expect(table.name).to be == 'Article'
       end
 
       it 'knows its attributes' do
-        table.attributes.should == attributes
+        expect(table.attributes).to be == attributes
       end
 
       it 'converts to a string for SQL' do
-        table.to_s.should == '"Article"'
+        expect(table.to_s).to be == '"Article"'
       end
 
       it 'generates proper SQL to create itself' do
-        table.create_table_sql.should ==
+        expect(table.create_table_sql).to be ==
           'CREATE TABLE IF NOT EXISTS "Article" (id UUID PRIMARY KEY DEFAULT uuid_generate_v4(), title TEXT, body TEXT, author JSON, published_at TIMESTAMPTZ, views BIGINT)'
       end
 
@@ -33,7 +33,7 @@ module Perpetuity
         attributes = self.attributes.dup
         attributes.unshift Table::Attribute.new(:id, String)
         table = Table.new('Article', attributes)
-        table.create_table_sql.should ==
+        expect(table.create_table_sql).to be ==
           'CREATE TABLE IF NOT EXISTS "Article" (id TEXT PRIMARY KEY, title TEXT, body TEXT, author JSON, published_at TIMESTAMPTZ, views BIGINT)'
       end
 
@@ -42,7 +42,7 @@ module Perpetuity
           it 'uses the attribute type for the column type' do
             attributes = [Table::Attribute.new(:id, String, primary_key: true), Table::Attribute.new(:name, String)]
             table = Table.new('User', attributes)
-            table.create_table_sql.should == 'CREATE TABLE IF NOT EXISTS "User" (id TEXT PRIMARY KEY, name TEXT)'
+            expect(table.create_table_sql).to be == 'CREATE TABLE IF NOT EXISTS "User" (id TEXT PRIMARY KEY, name TEXT)'
           end
         end
       end

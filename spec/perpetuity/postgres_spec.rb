@@ -28,7 +28,7 @@ module Perpetuity
 
         [:host, :port, :db, :pool_size, :username, :password].each do |attribute|
           it "returns its #{attribute}" do
-            postgres.public_send(attribute).should == send(attribute)
+            expect(postgres.public_send(attribute)).to be == send(attribute)
           end
         end
       end
@@ -37,23 +37,23 @@ module Perpetuity
         let(:postgres) { Postgres.new(db: 'my_db') }
 
         it 'defaults to host = localhost' do
-          postgres.host.should == 'localhost'
+          expect(postgres.host).to be == 'localhost'
         end
 
         it 'defaults to port = 5432 (Postgres default)' do
-          postgres.port.should == 5432
+          expect(postgres.port).to be == 5432
         end
 
         it "defaults to username = #{ENV['USER']}" do
-          postgres.username.should == ENV['USER']
+          expect(postgres.username).to be == ENV['USER']
         end
 
         it 'defaults to a blank password' do
-          postgres.password.should be nil
+          expect(postgres.password).to be nil
         end
 
         it 'defaults to pool_size = 5' do
-          postgres.pool_size.should == 5
+          expect(postgres.pool_size).to be == 5
         end
       end
     end
@@ -64,10 +64,10 @@ module Perpetuity
         Postgres::Table::Attribute.new('body', String),
         Postgres::Table::Attribute.new('author', Object)
       ]
-      postgres.should have_table('Article')
+      expect(postgres).to have_table('Article')
 
       postgres.drop_table 'Article'
-      postgres.should_not have_table 'Article'
+      expect(postgres).not_to have_table 'Article'
     end
 
     it 'adds columns automatically if they are not there' do
@@ -86,15 +86,15 @@ module Perpetuity
                                            ["'Jamie'", "'2013-1-1'"])]
       id = postgres.insert('Article', data, attributes).first
 
-      postgres.find('Article', id)['timestamp'].should =~ /2013/
+      expect(postgres.find('Article', id)['timestamp']).to be =~ /2013/
 
       postgres.drop_table 'Article' # Cleanup
     end
 
     it 'converts values into something that works with the DB' do
-      postgres.postgresify("string").should == "'string'"
-      postgres.postgresify(1).should == '1'
-      postgres.postgresify(true).should == 'TRUE'
+      expect(postgres.postgresify("string")).to be == "'string'"
+      expect(postgres.postgresify(1)).to be == '1'
+      expect(postgres.postgresify(true)).to be == 'TRUE'
     end
 
     describe 'working with data' do
@@ -109,8 +109,8 @@ module Perpetuity
         id = postgres.insert('User', data, attributes).first
         result = postgres.find('User', id)
 
-        id.should =~ /[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}/
-        result['name'].should == 'Jamie'
+        expect(id).to be =~ /[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}/
+        expect(result['name']).to be == 'Jamie'
       end
 
       describe 'returning ids' do
@@ -118,7 +118,7 @@ module Perpetuity
           data << Postgres::SerializedData.new([:name], ["'Jessica'"]) <<
           Postgres::SerializedData.new([:name], ["'Kevin'"])
           ids = postgres.insert('User', data, attributes)
-          ids.should be_a Array
+          expect(ids).to be_a Array
           expect(ids.count).to eq 3
         end
 
@@ -127,7 +127,7 @@ module Perpetuity
           attributes << Attribute.new(:id, Integer)
           data.first[:id] = 1234
           ids = postgres.insert 'User', data, attributes
-          ids.first.should == 1234
+          expect(ids.first).to be == 1234
           postgres.drop_table 'User'
         end
       end
@@ -144,12 +144,12 @@ module Perpetuity
 
       it 'returns a count of 0 when the table does not exist' do
         postgres.drop_table 'Article'
-        postgres.count('Article').should == 0
+        expect(postgres.count('Article')).to be == 0
       end
 
       it 'returns no rows when the table does not exist' do
         postgres.drop_table 'Article'
-        postgres.retrieve('Article', 'TRUE').should == []
+        expect(postgres.retrieve('Article', 'TRUE')).to be == []
       end
 
       it 'updates a specific record' do
@@ -157,7 +157,7 @@ module Perpetuity
         postgres.update 'User', id, name: 'foo'
 
         retrieved = postgres.retrieve 'User', "id = '#{id}'"
-        retrieved.first['name'].should == 'foo'
+        expect(retrieved.first['name']).to be == 'foo'
       end
 
       it 'updates a record when a column does not currently exist' do
@@ -165,14 +165,14 @@ module Perpetuity
         postgres.update 'User', id, Postgres::SerializedData.new(['foo'], ["'bar'"])
 
         retrieved = postgres.retrieve('User', "id = '#{id}'")
-        retrieved.first['foo'].should == 'bar'
+        expect(retrieved.first['foo']).to be == 'bar'
       end
 
       describe 'deletion' do
         it 'deletes all records' do
           postgres.insert 'User', data, attributes
           postgres.delete_all 'User'
-          postgres.count('User').should == 0
+          expect(postgres.count('User')).to be == 0
         end
 
         it 'deletes a record with a specific id' do
@@ -197,42 +197,42 @@ module Perpetuity
         it 'increments a value for a record' do
           id = postgres.insert('Increment', data, attributes).first
           postgres.increment 'Increment', id, :n, 10
-          postgres.find('Increment', id)['n'].should == '11'
+          expect(postgres.find('Increment', id)['n']).to be == '11'
         end
       end
     end
 
     describe 'query generation' do
       it 'creates SQL queries with a block' do
-        postgres.query { |o| o.name == 'foo' }.to_db.should ==
+        expect(postgres.query { |o| o.name == 'foo' }.to_db).to be ==
           "name = 'foo'"
       end
 
       it 'does not allow SQL injection' do
         query = postgres.query { |o| o.name == "' OR 1; --" }.to_db
-        query.should == "name = ''' OR 1; --'"
+        expect(query).to be == "name = ''' OR 1; --'"
       end
 
       it 'limits results' do
         query = postgres.query
         sql = postgres.select(from: 'Article', where: query, limit: 2)
-        sql.should == %Q{SELECT * FROM "Article" WHERE TRUE LIMIT 2}
+        expect(sql).to be == %Q{SELECT * FROM "Article" WHERE TRUE LIMIT 2}
       end
 
       describe 'ordering results' do
         it 'orders results without a qualifier' do
           sql = postgres.select(from: 'Article', order: :title)
-          sql.should == %Q{SELECT * FROM "Article" ORDER BY title}
+          expect(sql).to be == %Q{SELECT * FROM "Article" ORDER BY title}
         end
 
         it 'orders results with asc' do
           sql = postgres.select(from: 'Article', order: { title: :asc })
-          sql.should == %Q{SELECT * FROM "Article" ORDER BY title ASC}
+          expect(sql).to be == %Q{SELECT * FROM "Article" ORDER BY title ASC}
         end
 
         it 'reverse-orders results' do
           sql = postgres.select(from: 'Article', order: { title: :desc })
-          sql.should == %Q{SELECT * FROM "Article" ORDER BY title DESC}
+          expect(sql).to be == %Q{SELECT * FROM "Article" ORDER BY title DESC}
         end
       end
     end
@@ -255,10 +255,10 @@ module Perpetuity
 
         active_indexes = postgres.active_indexes(Object)
         index = active_indexes.find { |i| i.attribute_names == ['title'] }
-        index.attribute_names.should == ['title']
-        index.table.should == 'Object'
-        index.should be_unique
-        index.should be_active
+        expect(index.attribute_names).to be == ['title']
+        expect(index.table).to be == 'Object'
+        expect(index).to be_unique
+        expect(index).to be_active
       end
 
       describe 'adding indexes to the database' do
@@ -266,17 +266,17 @@ module Perpetuity
           title_attribute = Attribute.new(:title, String)
           postgres.index Object, title_attribute
           index = postgres.indexes(Object).find { |i| i.attributes.map(&:name) == [:title] }
-          index.attribute_names.should == ['title']
-          index.table.should == 'Object'
-          index.should_not be_unique
-          index.should_not be_active
+          expect(index.attribute_names).to be == ['title']
+          expect(index.table).to be == 'Object'
+          expect(index).not_to be_unique
+          expect(index).not_to be_active
         end
 
         it 'activates the specified index' do
           title_attribute = Attribute.new(:title, String)
           index = postgres.index Object, title_attribute
           postgres.activate_index! index
-          postgres.active_indexes(Object).map(&:attribute_names).should include ['title']
+          expect(postgres.active_indexes(Object).map(&:attribute_names)).to include ['title']
         end
       end
 
@@ -285,7 +285,7 @@ module Perpetuity
           index = postgres.index(Object, Attribute.new(:title, String))
           postgres.activate_index! index
           postgres.remove_index index
-          postgres.active_indexes(Object).map(&:attribute_names).should_not include ['title']
+          expect(postgres.active_indexes(Object).map(&:attribute_names)).not_to include ['title']
         end
       end
     end

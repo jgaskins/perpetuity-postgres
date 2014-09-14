@@ -27,7 +27,7 @@ module Perpetuity
       let(:serializer) { Serializer.new(book_mapper) }
 
       it 'serializes simple objects' do
-        serializer.serialize(Book.new('Foo')).to_s.should ==
+        expect(serializer.serialize(Book.new('Foo')).to_s).to be ==
           %q{(title,authors,main_character) VALUES ('Foo','[]',NULL)}
       end
 
@@ -42,7 +42,7 @@ module Perpetuity
         context 'with nested objects' do
           let(:book) { Book.new('Foo', jamie, character) }
           it 'converts objects into JSON' do
-            serializer.serialize(book).to_s.should ==
+            expect(serializer.serialize(book).to_s).to be ==
               %Q{(title,authors,main_character) VALUES ('Foo','#{jamie_json}','#{character_json}')}
           end
         end
@@ -51,7 +51,7 @@ module Perpetuity
           let(:book) { Book.new('Foo', [jamie], [character]) }
 
           it 'adds the JSON array' do
-            serializer.serialize(book).to_s.should ==
+            expect(serializer.serialize(book).to_s).to be ==
               %Q{(title,authors,main_character) VALUES ('Foo','[#{jamie_json}]','[#{character_json}]')}
           end
         end
@@ -59,39 +59,39 @@ module Perpetuity
 
       context 'with natively serializable values' do
         it 'serializes strings' do
-          serializer.serialize_attribute('string').should == "'string'"
+          expect(serializer.serialize_attribute('string')).to be == "'string'"
         end
 
         it 'serializes numbers' do
-          serializer.serialize_attribute(1).should == '1'
-          serializer.serialize_attribute(1.5).should == '1.5'
+          expect(serializer.serialize_attribute(1)).to be == '1'
+          expect(serializer.serialize_attribute(1.5)).to be == '1.5'
         end
 
         it 'serializes nil' do
-          serializer.serialize_attribute(nil).should == 'NULL'
+          expect(serializer.serialize_attribute(nil)).to be == 'NULL'
         end
 
         it 'serializes booleans' do
-          serializer.serialize_attribute(true).should == 'TRUE'
-          serializer.serialize_attribute(false).should == 'FALSE'
+          expect(serializer.serialize_attribute(true)).to be == 'TRUE'
+          expect(serializer.serialize_attribute(false)).to be == 'FALSE'
         end
 
         it 'serializes Time objects' do
           time = Time.new(2000, 1, 2, 3, 4, 5.123456, '-04:00')
-          serializer.serialize_attribute(time).should == "'2000-01-02 03:04:05.123456-0400'::timestamptz"
+          expect(serializer.serialize_attribute(time)).to be == "'2000-01-02 03:04:05.123456-0400'::timestamptz"
         end
 
         it 'serializes Date objects' do
           date = Date.new(2014, 8, 25)
-          serializer.serialize_attribute(date).should == "'2014-08-25'::date"
+          expect(serializer.serialize_attribute(date)).to be == "'2014-08-25'::date"
         end
 
         it 'serializes an array as JSON' do
-          serializer.serialize_attribute([1, 'foo']).should == %q{'[1,"foo"]'}
+          expect(serializer.serialize_attribute([1, 'foo'])).to be == %q{'[1,"foo"]'}
         end
 
         it 'serializes a hash as JSON' do
-          serializer.serialize_attribute(a: 1, foo: ['bar']).should == %q{'{"a":1,"foo":["bar"]}'}
+          expect(serializer.serialize_attribute(a: 1, foo: ['bar'])).to be == %q{'{"a":1,"foo":["bar"]}'}
         end
       end
 
@@ -114,7 +114,7 @@ module Perpetuity
           }].to_json
           serialized_book['authors'] = serialized_authors
           book = Book.new('My Book', [author])
-          serializer.unserialize(serialized_book).should == book
+          expect(serializer.unserialize(serialized_book)).to be == book
         end
 
         it 'deserializes an object which references another object' do
@@ -125,7 +125,7 @@ module Perpetuity
             }
           }.to_json
           deserialized_book = Book.new('My Book', [], Reference.new(Person, 'id-id-id'))
-          serializer.unserialize(serialized_book).should == deserialized_book
+          expect(serializer.unserialize(serialized_book)).to be == deserialized_book
         end
 
         let(:article_class) do
@@ -180,31 +180,31 @@ module Perpetuity
             published_at: Time.new(2013, 1, 2, 3, 4, 5.123456, '-05:00'),
             published: true
           )
-          serializer.unserialize(serialized_article).should == article
+          expect(serializer.unserialize(serialized_article)).to be == article
         end
       end
 
       describe 'identifying embedded/referenced objects as foreign' do
         it 'sees hashes with metadata keys as foreign objects' do
-          serializer.foreign_object?({'__metadata__' => 'lol'}).should be_truthy
+          expect(serializer.foreign_object?({'__metadata__' => 'lol'})).to be_truthy
         end
 
         it 'sees hashes without metadata keys as simple hashes' do
-          serializer.foreign_object?({ 'name' => 'foo' }).should be_falsey
+          expect(serializer.foreign_object?({ 'name' => 'foo' })).to be_falsey
         end
       end
 
       describe 'identifying possible JSON strings' do
         it 'identifies JSON objects' do
-          serializer.possible_json_value?('{"name":"foo"}').should be_truthy
+          expect(serializer.possible_json_value?('{"name":"foo"}')).to be_truthy
         end
 
         it 'identifies JSON arrays' do
-          serializer.possible_json_value?('[{"name":"foo"}]').should be_truthy
+          expect(serializer.possible_json_value?('[{"name":"foo"}]')).to be_truthy
         end
 
         it 'rejects things it does not detect as either of the above' do
-          serializer.possible_json_value?('foo is my name').should be_falsey
+          expect(serializer.possible_json_value?('foo is my name')).to be_falsey
         end
       end
 
@@ -212,13 +212,13 @@ module Perpetuity
         original = Book.new('Old title')
         modified = original.dup
         modified.title = 'New title'
-        serializer.serialize_changes(modified, original).should ==
+        expect(serializer.serialize_changes(modified, original)).to be ==
           SerializedData.new([:title], ["'New title'"])
       end
 
       it 'serializes a reference as its referenced class' do
         reference = Reference.new(Object, 123)
-        serializer.serialize_reference(reference).should == JSONHash.new(
+        expect(serializer.serialize_reference(reference)).to be == JSONHash.new(
           __metadata__: {
             class: Object,
             id: 123

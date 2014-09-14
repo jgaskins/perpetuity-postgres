@@ -7,22 +7,22 @@ module Perpetuity
       let(:indexes) { IndexCollection.new(Object) }
 
       it 'knows which table it is indexing' do
-        indexes.table.should == 'Object'
+        expect(indexes.table).to be == 'Object'
       end
 
       it 'iterates over its indexes' do
         indexes << 1
-        indexes.map { |index| index.to_s }.should include '1'
+        expect(indexes.map { |index| index.to_s }).to include '1'
       end
 
       it 'converts to an array' do
-        indexes.to_ary.should == []
+        expect(indexes.to_ary).to be == []
       end
 
       it 'removes indexes based on a block' do
         indexes << double('Index', name: 'lol')
         indexes.reject! { |index| index.name == 'lol' }
-        indexes.map(&:name).should_not include 'lol'
+        expect(indexes.map(&:name)).not_to include 'lol'
       end
     end
   end

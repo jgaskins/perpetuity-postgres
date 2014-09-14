@@ -8,18 +8,18 @@ module Perpetuity
       let(:serialized) { ValueWithAttribute.new('foo', attribute) }
 
       it 'contains a value and an attribute' do
-        serialized.value.should == 'foo'
-        serialized.attribute.should == attribute
+        expect(serialized.value).to be == 'foo'
+        expect(serialized.attribute).to be == attribute
       end
 
       it 'knows its type' do
-        serialized.type.should be String
+        expect(serialized.type).to be String
       end
 
       context 'when attribute is embedded' do
         let(:attribute) { OpenStruct.new(embedded?: true) }
         it 'is embedded' do
-          serialized.should be_embedded
+          expect(serialized).to be_embedded
         end
       end
 
@@ -27,12 +27,12 @@ module Perpetuity
         let(:attribute) { OpenStruct.new(embedded?: false) }
 
         it 'is not embedded' do
-          serialized.should_not be_embedded
+          expect(serialized).not_to be_embedded
         end
       end
 
       it 'passes messages to the value' do
-        serialized.upcase.should == 'FOO'
+        expect(serialized.upcase).to be == 'FOO'
       end
     end
   end

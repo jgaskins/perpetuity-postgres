@@ -26,19 +26,18 @@ module Perpetuity
         end
 
         it 'returns the value of the block' do
-          pool.lend_connection { 1 }.should == 1
+          expect(pool.lend_connection { 1 }).to be == 1
         end
       end
 
       it 'executes a given SQL statement' do
         sql = "SELECT TRUE"
-        Connection.any_instance.should_receive(:execute)
-                               .with(sql)
+        expect_any_instance_of(Connection).to receive(:execute).with(sql)
         pool.execute sql
       end
 
       it 'passes the tables message to a connection' do
-        Connection.any_instance.should_receive(:tables)
+        expect_any_instance_of(Connection).to receive(:tables)
         pool.tables
       end
 

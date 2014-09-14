@@ -6,7 +6,7 @@ module Perpetuity
       let(:expression) { Expression.new('uuid_generate_v4()') }
 
       it 'passes the expression straight into SQL' do
-        expression.to_sql.should == 'uuid_generate_v4()'
+        expect(expression.to_sql).to be == 'uuid_generate_v4()'
       end
     end
   end

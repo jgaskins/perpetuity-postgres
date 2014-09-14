@@ -8,15 +8,15 @@ module Perpetuity
       let(:union) { QueryUnion.new(lhs, rhs) }
 
       it 'converts to a SQL "OR" expression' do
-        union.to_db.should == '(left = 1 OR right = 2)'
+        expect(union.to_db).to be == '(left = 1 OR right = 2)'
       end
 
       it 'allows unions to have other unions' do
-        (union|union).to_db.should == '((left = 1 OR right = 2) OR (left = 1 OR right = 2))'
+        expect((union|union).to_db).to be == '((left = 1 OR right = 2) OR (left = 1 OR right = 2))'
       end
 
       it 'allows unions to have intersections' do
-        (union&union).to_db.should == '((left = 1 OR right = 2) AND (left = 1 OR right = 2))'
+        expect((union&union).to_db).to be == '((left = 1 OR right = 2) AND (left = 1 OR right = 2))'
       end
     end
   end
