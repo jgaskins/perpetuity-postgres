@@ -43,6 +43,18 @@ module Perpetuity
 
       def execute sql
         pg_connection.exec sql
+      rescue PG::AdminShutdown, PG::UnableToSend => e
+        # server closed the connection unexpectedly
+        # Try to reconnect 3 times in case it's just a server restart.
+        unable_to_send_retries ||= 0
+        if unable_to_send_retries < 3
+          connect
+          unable_to_send_retries += 1
+          sleep 1
+          retry
+        else
+          raise
+        end
       rescue PG::UndefinedFunction => e
         if e.message =~ /uuid_generate/
           use_uuid_extension
