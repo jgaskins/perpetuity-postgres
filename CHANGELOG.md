@@ -1,3 +1,7 @@
+## Version 0.0.8
+
+- Reconnect automatically if connection is interrupted. Reconnection is tried 3x at 1-second intervals.
+
 ## Version 0.0.7
 
 - Allow for querying within a range: `mapper.select { |o| o.value.in (1..3) }`
