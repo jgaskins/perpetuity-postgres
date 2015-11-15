@@ -9,7 +9,7 @@ module Perpetuity
       end
 
       def self.from_sql sql_value
-        match = sql_value =~ /(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2}).(\d+)([-+]\d{2})?/
+        match = sql_value =~ /(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})\.?(\d*)?([-+]\d{2})?/
         return new(nil) unless match
 
         offset = $8 ? "#$8:00" : '+00:00'

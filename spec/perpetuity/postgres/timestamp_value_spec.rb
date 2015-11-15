@@ -27,6 +27,12 @@ module Perpetuity
           expect(actual.to_time).to be_within(0.0000001).of expected
         end
 
+        it 'converts timestamps without time zones or milliseconds' do
+          actual = TimestampValue.from_sql('1982-08-25 22:19:10')
+          expected = Time.new(1982, 8, 25, 22, 19, 10, '-00:00')
+          expect(actual.to_time).to be_within(0.0000001).of expected
+        end
+
         it 'returns nil if nil is passed in' do
           expect(TimestampValue.from_sql(nil).to_time).to be nil
         end
