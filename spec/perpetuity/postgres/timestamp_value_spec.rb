@@ -28,7 +28,7 @@ module Perpetuity
         end
 
         it 'returns nil if nil is passed in' do
-          expect(TimestampValue.from_sql(nil)).to be nil
+          expect(TimestampValue.from_sql(nil).to_time).to be nil
         end
       end
 
