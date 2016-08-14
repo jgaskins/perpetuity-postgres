@@ -15,6 +15,11 @@ module Perpetuity
         expect(JSONStringValue.new('Anakin "Darth Vader" Skywalker').to_s).to be ==
           '"Anakin \\"Darth Vader\\" Skywalker"'
       end
+
+      it 'escapes single quotes' do
+        expect(JSONStringValue.new(%{Man it's a hot one}).to_s).to be ==
+          %{"Man it''s a hot one"}
+      end
     end
   end
 end
